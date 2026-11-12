@@ -1,0 +1,2911 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>제주어 퀴즈 모험 - 무한의 계단 & 제주도 한바퀴 X런</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti for Victory -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- QRCode JS Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #0b0f19;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            overflow: hidden;
+        }
+
+        .font-jua {
+            font-family: 'Jua', sans-serif;
+        }
+
+        /* Bounce Animation */
+        @keyframes bounce-in {
+            0% { transform: scale(0) translateY(-40px); opacity: 0; }
+            60% { transform: scale(1.15) translateY(6px); opacity: 1; }
+            100% { transform: scale(1) translateY(0); }
+        }
+
+        .animate-tangerine-in {
+            animation: bounce-in 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* Glassmorphism Styles */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+        }
+
+        canvas {
+            display: block;
+            touch-action: none;
+            background-color: #0284c7;
+            width: 100%;
+            height: 100%;
+        }
+
+        .ctrl-btn {
+            background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+            border: 3px solid #ffffff;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.3);
+        }
+        .ctrl-btn:active {
+            transform: scale(0.92);
+            background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+        }
+
+        .jump-btn {
+            background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+            border: 3px solid #ffffff;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.3);
+        }
+        .jump-btn:active {
+            transform: scale(0.92);
+            background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .slide-btn {
+            background: linear-gradient(180deg, #a855f7 0%, #7e22ce 100%);
+            border: 3px solid #ffffff;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.3);
+        }
+        .slide-btn:active {
+            transform: scale(0.92);
+            background: linear-gradient(180deg, #7e22ce 0%, #6b21a8 100%);
+        }
+
+        /* Sparkling Title Badge */
+        @keyframes sparkle-shine {
+            0% {
+                background-position: 0% 50%;
+                box-shadow: 0 0 15px rgba(245, 158, 11, 0.8);
+                transform: scale(1);
+            }
+            50% {
+                background-position: 100% 50%;
+                box-shadow: 0 0 25px rgba(251, 191, 36, 1);
+                transform: scale(1.02);
+            }
+            100% {
+                background-position: 0% 50%;
+                box-shadow: 0 0 15px rgba(245, 158, 11, 0.8);
+                transform: scale(1);
+            }
+        }
+
+        .title-badge-sparkle {
+            background: linear-gradient(120deg, #f59e0b, #ef4444, #8b5cf6, #10b981, #f59e0b, #eab308);
+            background-size: 250% 250%;
+            animation: sparkle-shine 2.5s ease-in-out infinite;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #f59e0b;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-2 sm:p-4 text-slate-800 bg-slate-950">
+
+    <div id="app" class="relative w-full max-w-4xl h-[94vh] max-h-[840px] bg-slate-900 rounded-3xl shadow-2xl overflow-hidden flex flex-col border-4 border-amber-500/40">
+
+        <!-- ==================== SCREEN 1: LOGIN / START SCREEN ==================== -->
+        <div id="login-screen" class="relative w-full h-full flex items-center justify-center p-4 bg-slate-900 bg-cover bg-center" 
+             style="background-image: url('https://images.unsplash.com/photo-1548115184-bc6544d06a58?auto=format&fit=crop&w=1200&q=80');">
+            
+            <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-md"></div>
+
+            <div class="relative z-10 w-full max-w-md bg-white/95 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl border-4 border-amber-400 animate-tangerine-in text-slate-800">
+                
+                <div class="text-center mb-5">
+                    <span class="inline-block bg-gradient-to-r from-teal-500 via-emerald-500 to-amber-500 text-white font-jua text-xs sm:text-sm px-4 py-1.5 rounded-full shadow-lg border border-white/50 mb-2 animate-bounce">
+                        🏖️ 혼저옵서예! 🍊 감귤 모으고 제주도 탐험해보카! 🏔️
+                    </span>
+                    <h1 class="font-jua text-3xl sm:text-4xl text-slate-800 drop-shadow-sm">제주어 퀴즈 모험</h1>
+                    <p class="text-xs text-slate-600 font-medium mt-1">
+                        학생 정보를 입력하고 신나는 제주어 게임 모드를 선택해보세요!
+                    </p>
+                </div>
+
+                <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
+                    <div class="grid grid-cols-3 gap-2.5">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">학년 <span class="text-amber-600">*</span></label>
+                            <select id="user-grade" required class="w-full bg-slate-100 border-2 border-slate-300 rounded-xl px-2.5 py-2.5 font-bold text-slate-800 focus:outline-none focus:border-amber-500 text-center text-sm">
+                                <option value="1">1학년</option>
+                                <option value="2">2학년</option>
+                                <option value="3" selected>3학년</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">반 <span class="text-amber-600">*</span></label>
+                            <input type="number" id="user-class" min="1" max="30" value="1" placeholder="예: 3" required class="w-full bg-slate-100 border-2 border-slate-300 rounded-xl px-2.5 py-2.5 font-bold text-slate-800 focus:outline-none focus:border-amber-500 text-center text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">번호 <span class="text-amber-600">*</span></label>
+                            <input type="number" id="user-number" min="1" max="50" value="1" placeholder="예: 15" required class="w-full bg-slate-100 border-2 border-slate-300 rounded-xl px-2.5 py-2.5 font-bold text-slate-800 focus:outline-none focus:border-amber-500 text-center text-sm">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">이름 또는 닉네임 <span class="text-amber-600">*</span></label>
+                        <input type="text" id="user-name" value="탐라어린이" placeholder="이름을 입력하세요 (예: 김제주)" maxlength="10" required class="w-full bg-slate-100 border-2 border-slate-300 rounded-xl px-4 py-3 font-bold text-slate-800 focus:outline-none focus:border-amber-500 text-sm">
+                        <span class="text-[11px] text-amber-700 font-medium mt-1 block">* 귀여운 돌하르방 캐릭터 위에 입력한 이름이 표시됩니다!</span>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-teal-500/15 via-amber-500/15 to-indigo-500/15 border-2 border-teal-500/40 rounded-2xl p-3 text-center shadow-inner">
+                        <span class="font-jua text-teal-700 text-sm sm:text-base flex items-center justify-center space-x-1.5">
+                            <span>🌺</span>
+                            <span>신나는 모험을 즐기고 제주어 명인이 되어보세요!</span>
+                        </span>
+                        <p class="text-[11px] text-slate-600 font-semibold mt-1">
+                            문제를 맞추고 귤을 모아봅시다! [인간 돌하르방] 칭호에 도전해봅서!
+                        </p>
+                    </div>
+
+                    <div class="pt-1 flex flex-col space-y-2">
+                        <button type="submit" class="w-full bg-gradient-to-r from-teal-500 via-amber-500 to-orange-500 hover:from-teal-600 hover:to-orange-600 text-white font-jua text-xl py-3.5 rounded-2xl shadow-lg hover:shadow-xl active:scale-95 transition flex items-center justify-center space-x-2">
+                            <span>🍊 게임 선택하러 가기 (혼저 가보카!)</span>
+                            <i class="fa-solid fa-arrow-right text-sm"></i>
+                        </button>
+                        
+                        <div class="grid grid-cols-2 gap-2">
+                            <button type="button" onclick="showRankingScreen()" class="bg-slate-800 hover:bg-slate-700 text-amber-300 font-jua text-sm py-2.5 rounded-2xl border border-amber-400/40 shadow transition flex items-center justify-center space-x-1.5">
+                                <i class="fa-solid fa-trophy text-amber-400 text-xs"></i>
+                                <span>🏆 전체 랭킹</span>
+                            </button>
+
+                            <button type="button" onclick="openAdminPasswordModal()" class="bg-slate-800 hover:bg-slate-700 text-rose-300 font-jua text-sm py-2.5 rounded-2xl border border-rose-400/40 shadow transition flex items-center justify-center space-x-1.5">
+                                <i class="fa-solid fa-user-shield text-rose-400 text-xs"></i>
+                                <span>⚙️ 관리자 모드</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <!-- ==================== SCREEN 1.5: GAME SELECTION SCREEN ==================== -->
+        <div id="game-select-screen" class="hidden relative w-full h-full flex flex-col justify-between p-4 sm:p-6 bg-slate-900 text-white overflow-y-auto">
+            <div class="text-center border-b border-amber-500/30 pb-3 shrink-0">
+                <span class="inline-block bg-gradient-to-r from-amber-500 to-orange-500 text-white font-jua text-xs sm:text-sm px-4 py-1 rounded-full shadow mb-1">
+                    🎮 제주어 모험 게임 모드 선택
+                </span>
+                <h2 class="font-jua text-2xl sm:text-3xl text-amber-400">어떤 게임으로 도전해보시겠습니까?</h2>
+                <p id="select-user-greeting" class="text-xs text-slate-300 mt-1">3학년 1반 1번 탐라어린이님, 원하시는 게임을 선택해주세요!</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-auto py-2">
+                <!-- Game 1 Card: 무한의 계단 -->
+                <div onclick="selectGameMode('stairs')" class="bg-gradient-to-br from-slate-800 via-slate-850 to-slate-900 hover:from-slate-700 hover:to-slate-800 border-4 border-amber-400/70 hover:border-amber-300 rounded-3xl p-5 shadow-2xl transition transform hover:-translate-y-1 cursor-pointer flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="bg-amber-500 text-slate-950 font-jua text-xs px-3 py-1 rounded-full font-bold">
+                                MODE 1
+                            </span>
+                            <span class="text-2xl">🧗‍♂️</span>
+                        </div>
+                        <h3 class="font-jua text-2xl text-amber-300 group-hover:text-amber-200">한라산 무한의 계단</h3>
+                        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                            차오르는 바당물(바닷물)을 피해서 돌담 계단을 폴짝폴짝 뛰어올라가세요! 귤을 모으고 제주어 퀴즈를 맞추며 백록담 정상에 도전합니다.
+                        </p>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t border-slate-700/80 flex items-center justify-between text-xs font-jua text-amber-400">
+                        <span>조작: 좌/우 이동 & 점프</span>
+                        <span class="bg-amber-500/20 px-3 py-1 rounded-xl border border-amber-500/40">도전하기 ▶</span>
+                    </div>
+                </div>
+
+                <!-- Game 2 Card: 제주도 한바퀴 X런 -->
+                <div onclick="selectGameMode('xrun')" class="bg-gradient-to-br from-slate-800 via-slate-850 to-slate-900 hover:from-slate-700 hover:to-slate-800 border-4 border-teal-400/70 hover:border-teal-300 rounded-3xl p-5 shadow-2xl transition transform hover:-translate-y-1 cursor-pointer flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="bg-teal-400 text-slate-950 font-jua text-xs px-3 py-1 rounded-full font-bold">
+                                MODE 2
+                            </span>
+                            <span class="text-2xl">🏃‍♂️</span>
+                        </div>
+                        <h3 class="font-jua text-2xl text-teal-300 group-hover:text-teal-200">제주도 한바퀴 X런</h3>
+                        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                            아름다운 제주 해안도로를 거침없이 달려보세요! 새(갈매기)는 숙이기로만 피할 수 있으며 귤은 1개씩 단독 생성됩니다.
+                        </p>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t border-slate-700/80 flex items-center justify-between text-xs font-jua text-teal-300">
+                        <span>조작: 점프 & 슬라이드(숙이기 필수!)</span>
+                        <span class="bg-teal-500/20 px-3 py-1 rounded-xl border border-teal-500/40">도전하기 ▶</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-2 flex justify-center shrink-0">
+                <button onclick="returnToStart()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-jua text-sm px-6 py-2.5 rounded-2xl border border-slate-700 transition">
+                    <i class="fa-solid fa-arrow-left mr-1.5"></i> 정보 수정하기 (이전으로)
+                </button>
+            </div>
+        </div>
+
+        <!-- ==================== SCREEN 2: MAIN GAME SCREEN ==================== -->
+        <div id="game-screen" class="hidden relative w-full h-full flex flex-col justify-between bg-slate-800 overflow-hidden select-none">
+            
+            <!-- Game Top HUD Header Bar -->
+            <div class="absolute top-0 left-0 right-0 z-20 flex items-center justify-between p-2.5 sm:p-4 bg-slate-900/85 backdrop-blur-md border-b border-amber-500/30">
+                <button onclick="returnToStart()" class="flex items-center space-x-1.5 text-slate-200 hover:text-amber-400 font-bold text-xs sm:text-sm bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-xl border border-slate-700 transition">
+                    <i class="fa-solid fa-house"></i>
+                    <span>시작화면</span>
+                </button>
+
+                <!-- Student Info Display -->
+                <div class="text-center">
+                    <div id="user-hud-info" class="text-white font-jua text-xs sm:text-sm drop-shadow">
+                        3학년 1반 1번 탐라어린이
+                    </div>
+                    <div class="flex items-center justify-center space-x-2 mt-0.5">
+                        <span id="altitude-badge" class="bg-sky-600 text-white font-jua text-[10px] sm:text-xs px-2.5 py-0.5 rounded-full shadow-sm border border-sky-300">
+                            ⛰️ 제주 한라산 등반 중 (0m)
+                        </span>
+                        <span id="timer-display" class="bg-slate-800 text-amber-300 font-mono text-xs px-2 py-0.5 rounded border border-amber-500/30">
+                            ⏱️ 00:00
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Tangerine Counter & Status HUD -->
+                <div class="flex items-center space-x-2 sm:space-x-3">
+                    <div id="lives-container" class="flex flex-col items-end bg-rose-950/70 px-2.5 py-1 rounded-xl border border-rose-500/50 text-xs">
+                        <div class="flex items-center space-x-1 text-xs sm:text-sm">
+                            <span id="danger-label-text" class="text-rose-400 font-bold">🌊 바당 수위</span>
+                        </div>
+                        <span id="water-danger-text" class="text-[10px] text-amber-300 font-bold mt-0.5">
+                            위험거리: 15m
+                        </span>
+                    </div>
+
+                    <div class="flex items-center space-x-2 bg-amber-500/20 px-3 py-1.5 rounded-xl border border-amber-500/50">
+                        <span class="text-xl">🍊</span>
+                        <span id="score-text" class="font-jua text-xl text-amber-400">0개</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tangerine Basket HUD Overlay -->
+            <div class="absolute top-16 left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-sm bg-slate-900/85 backdrop-blur-md rounded-2xl p-2 sm:p-2.5 border border-amber-500/40 shadow-xl">
+                <div class="flex items-center justify-between text-xs font-bold text-amber-300 px-2 mb-1">
+                    <span class="flex items-center space-x-1">
+                        <i class="fa-solid fa-basket-shopping text-amber-400"></i>
+                        <span>맨도롱 또똣한 감귤 바구니</span>
+                    </span>
+                    <span id="basket-status" class="text-amber-200 font-normal text-[11px]">귤🍊 하영 수집하고 달리기!</span>
+                </div>
+
+                <div class="w-full h-9 sm:h-11 bg-slate-950/80 rounded-xl border border-amber-900/50 p-1 flex items-center justify-center">
+                    <div id="tangerine-basket" class="flex items-center justify-center space-x-2 w-full">
+                        <!-- Dynamic Tangerine Slot Badges -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Canvas Area for Terrain + Scenery -->
+            <div class="relative w-full h-full flex items-center justify-center bg-sky-600">
+                <canvas id="runner-canvas" class="w-full h-full"></canvas>
+
+                <!-- Touch Controls Overlay -->
+                <div class="absolute bottom-4 left-4 right-4 z-30 flex items-center justify-between pointer-events-none">
+                    <!-- Left Side Controls (Left/Right in Stairs Mode) -->
+                    <div id="ctrl-left-container" class="flex space-x-3 pointer-events-auto">
+                        <button id="btn-left" class="ctrl-btn w-14 h-14 sm:w-16 sm:h-16 rounded-2xl text-white text-2xl flex items-center justify-center font-bold">
+                            ◀
+                        </button>
+                        <button id="btn-right" class="ctrl-btn w-14 h-14 sm:w-16 sm:h-16 rounded-2xl text-white text-2xl flex items-center justify-center font-bold">
+                            ▶
+                        </button>
+                    </div>
+
+                    <!-- Right Side Jump & Slide Buttons -->
+                    <div class="pointer-events-auto flex items-center space-x-3">
+                        <button id="btn-slide" class="slide-btn hidden w-16 h-16 sm:w-20 sm:h-20 rounded-full text-white font-jua text-xl sm:text-2xl flex flex-col items-center justify-center shadow-2xl">
+                            <span>⬇️</span>
+                            <span class="text-[11px] sm:text-xs">숙이기</span>
+                        </button>
+
+                        <button id="btn-jump" class="jump-btn w-16 h-16 sm:w-20 sm:h-20 rounded-full text-white font-jua text-xl sm:text-2xl flex flex-col items-center justify-center shadow-2xl">
+                            <span>⬆️</span>
+                            <span class="text-[11px] sm:text-xs">점프</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ==================== SCREEN 3: GAME OVER & NAVER SURVEY SCREEN ==================== -->
+        <div id="survey-screen" class="hidden relative w-full h-full flex flex-col justify-between p-4 sm:p-6 bg-slate-900 text-white overflow-y-auto">
+            
+            <div class="text-center border-b border-amber-500/30 pb-3 shrink-0">
+                <span class="inline-block bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-jua text-xs sm:text-sm px-3.5 py-1 rounded-full shadow mb-1">
+                    📋 제주어 교육 참여 만족도 설문조사
+                </span>
+                <h2 class="font-jua text-2xl sm:text-3xl text-amber-400">모험 종료 & 설문 참여 안내</h2>
+                <p class="text-xs text-slate-300 mt-1">제주어 퀴즈 모험에 참여해주셔서 감사합니다! 소중한 의견을 들려주세요.</p>
+            </div>
+
+            <!-- Student Game Result Summary Card -->
+            <div class="my-3 bg-gradient-to-r from-slate-800 via-slate-850 to-slate-800 p-3.5 sm:p-4 rounded-2xl border-2 border-amber-400/60 shadow-xl relative overflow-hidden shrink-0">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <div class="flex flex-col items-center sm:items-start text-center sm:text-left min-w-0 flex-1 w-full">
+                        <div class="flex items-center space-x-2 flex-wrap justify-center sm:justify-start">
+                            <span id="survey-res-status-badge" class="bg-emerald-500 text-white font-jua text-xs px-2.5 py-0.5 rounded-full inline-block shadow">
+                                🎉 모험 기록 달성!
+                            </span>
+                            <h3 id="survey-res-student-info" class="font-jua text-sm text-amber-200">
+                                3학년 1반 1번 탐라어린이
+                            </h3>
+                        </div>
+                        
+                        <div id="survey-res-title-badge" class="w-full mt-2 py-1.5 px-3 rounded-xl border flex items-center justify-between gap-2 transition-all duration-300">
+                            <span id="survey-res-title-text" class="font-jua text-base shrink-0">🗿 인간 돌하르방</span>
+                            <span id="survey-res-title-desc" class="text-xs font-medium text-slate-200 truncate">제주어의 전설! 제주 말과 혼이 살아숨쉬는 명인우다!</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-3 bg-slate-950/80 px-4 py-2 rounded-xl border border-amber-400/30 shrink-0 w-full sm:w-auto justify-around">
+                        <div class="text-center">
+                            <div class="text-[10px] text-slate-400">수집한 귤</div>
+                            <div id="survey-res-score" class="font-jua text-base text-amber-400">0개</div>
+                        </div>
+                        <div class="w-px h-6 bg-slate-700"></div>
+                        <div class="text-center">
+                            <div id="survey-res-metric-label" class="text-[10px] text-slate-400">최고 고도</div>
+                            <div id="survey-res-height" class="font-jua text-base text-teal-300">0m</div>
+                        </div>
+                        <div class="w-px h-6 bg-slate-700"></div>
+                        <div class="text-center">
+                            <div class="text-[10px] text-slate-400">소요 시간</div>
+                            <div id="survey-res-time" class="font-mono font-bold text-sm text-emerald-400">00:00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Naver Survey Container -->
+            <div class="flex-1 bg-slate-950/90 rounded-3xl border-2 border-emerald-500/50 p-4 sm:p-5 text-center flex flex-col items-center justify-center my-2 shadow-2xl relative">
+                
+                <div class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-3 py-1 rounded-full text-xs font-jua mb-2 flex items-center space-x-1.5">
+                    <span>📱</span>
+                    <span>구글 설문조사 폼 연결 (로그인 불필요)</span>
+                </div>
+
+                <h3 class="font-jua text-xl sm:text-2xl text-white mb-1">
+                    제주어 교육 및 퀴즈 프로그램 설문조사
+                </h3>
+                <p class="text-xs sm:text-sm text-slate-300 max-w-lg mb-4">
+                    스마트폰 카메라로 아래 **QR 코드를 스캔**하거나, **[구글 설문조사 참여하기]** 버튼을 눌러 소중한 의견을 들려주세요!
+                </p>
+
+                <div class="bg-white p-3 rounded-2xl shadow-2xl border-4 border-emerald-400 my-1 inline-block transform hover:scale-105 transition-transform duration-300">
+                    <div id="naver-survey-qrcode" class="flex items-center justify-center"></div>
+                </div>
+                <p class="text-[11px] text-amber-300 font-bold mt-2 mb-3">
+                    📸 QR 코드를 촬영하면 로그인 없이 즉시 설문 페이지로 이동합니다
+                </p>
+
+                <button onclick="openNaverSurveyForm()" class="w-full max-w-md bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-600 hover:to-teal-600 text-white font-jua text-lg sm:text-xl py-3.5 px-6 rounded-2xl shadow-lg hover:shadow-2xl active:scale-95 transition border-2 border-white/40 flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-pen-to-square text-xl"></i>
+                    <span>🟢 구글 설문조사 참여하기 (클릭시 이동)</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-sm"></i>
+                </button>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="pt-2 grid grid-cols-2 gap-3 shrink-0">
+                <button onclick="showRankingScreen()" class="bg-slate-800 hover:bg-slate-700 text-amber-300 font-jua text-base py-3 rounded-2xl border border-amber-400/40 shadow transition active:scale-95 text-center flex items-center justify-center space-x-1.5">
+                    <i class="fa-solid fa-trophy text-amber-400"></i>
+                    <span>🏆 명예의 전당 랭킹 보기</span>
+                </button>
+
+                <button onclick="returnToStart()" class="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-jua text-base py-3 rounded-2xl shadow-lg transition active:scale-95 text-center flex items-center justify-center space-x-1.5">
+                    <i class="fa-solid fa-house"></i>
+                    <span>🏠 시작 화면으로</span>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- ==================== SCREEN 4: RANKING SCREEN ==================== -->
+        <div id="ranking-screen" class="hidden relative w-full h-full flex flex-col justify-between p-3 sm:p-5 bg-slate-900 text-white overflow-hidden">
+            
+            <div class="flex items-center justify-between border-b border-amber-500/30 pb-2.5 shrink-0">
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl sm:text-3xl">🏆</span>
+                    <div>
+                        <h2 class="font-jua text-xl sm:text-2xl text-amber-400 leading-none">제주어 퀴즈 명예의 전당</h2>
+                        <p class="text-[10px] sm:text-xs text-slate-400 mt-0.5">혼저 옵서! 제주어 하영 아는 사람 다 모인 실시간 순위표우다!</p>
+                    </div>
+                </div>
+                <button onclick="returnToStart()" class="bg-slate-800 hover:bg-slate-700 text-amber-300 font-jua text-xs sm:text-sm px-3 py-1.5 rounded-xl border border-amber-400/40 transition">
+                    <i class="fa-solid fa-house mr-1"></i> 시작화면
+                </button>
+            </div>
+
+            <div class="flex items-center justify-between my-2 text-xs shrink-0">
+                <div class="relative w-48 sm:w-64">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-2 text-slate-400 text-[11px]"></i>
+                    <input type="text" id="rank-search" oninput="renderLeaderboardTable()" placeholder="이름 또는 학년/반 검색..." class="w-full bg-slate-800 border border-slate-700 rounded-xl pl-8 pr-3 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400">
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="clearAllRankings()" class="text-slate-400 hover:text-rose-400 text-[11px] underline">
+                        <i class="fa-solid fa-trash-can mr-1"></i> 랭킹 초기화
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex-1 bg-slate-950/80 rounded-2xl border border-slate-800 overflow-y-auto max-h-[56vh] p-1">
+                <table class="w-full text-left text-xs sm:text-sm">
+                    <thead class="bg-slate-800/90 text-amber-300 font-jua sticky top-0 border-b border-slate-700">
+                        <tr>
+                            <th class="p-2 text-center w-12">순위</th>
+                            <th class="p-2">학생 정보 (학년/반/번호/이름)</th>
+                            <th class="p-2 text-center">게임 모드</th>
+                            <th class="p-2 text-center">획득 칭호</th>
+                            <th class="p-2 text-center">수집한 귤</th>
+                            <th class="p-2 text-center">기록 (고도/거리)</th>
+                            <th class="p-2 text-center">소요 시간</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ranking-tbody" class="divide-y divide-slate-800/60 font-medium">
+                        <!-- Rankings injected dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pt-2 flex space-x-3 shrink-0">
+                <button onclick="returnToStart()" class="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-jua text-base sm:text-lg py-2.5 rounded-2xl shadow-lg transition active:scale-95 text-center">
+                    <i class="fa-solid fa-house mr-1.5"></i> 시작화면으로
+                </button>
+            </div>
+
+        </div>
+
+        <!-- ==================== SCREEN 5: ADMIN DASHBOARD SCREEN ==================== -->
+        <div id="admin-screen" class="hidden relative w-full h-full flex flex-col justify-between p-3 sm:p-5 bg-slate-900 text-white overflow-hidden">
+            
+            <div class="flex items-center justify-between border-b border-rose-500/30 pb-2.5 shrink-0">
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl sm:text-3xl">⚙️</span>
+                    <div>
+                        <h2 class="font-jua text-xl sm:text-2xl text-rose-400 leading-none">제주어 퀴즈 관리자 대시보드</h2>
+                        <p class="text-[10px] sm:text-xs text-slate-400 mt-0.5">각 퀴즈 단어별 출제 횟수 및 오답률 통계를 확인하고 분석합니다.</p>
+                    </div>
+                </div>
+                <button onclick="returnToStart()" class="bg-slate-800 hover:bg-slate-700 text-amber-300 font-jua text-xs sm:text-sm px-3 py-1.5 rounded-xl border border-amber-400/40 transition">
+                    <i class="fa-solid fa-house mr-1"></i> 시작화면
+                </button>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 my-2 shrink-0">
+                <div class="bg-slate-950/80 p-2.5 rounded-2xl border border-slate-800 text-center">
+                    <div class="text-[10px] text-slate-400 font-medium">총 풀이된 퀴즈</div>
+                    <div id="admin-stat-total-asked" class="font-jua text-lg sm:text-xl text-amber-400">0회</div>
+                </div>
+                <div class="bg-slate-950/80 p-2.5 rounded-2xl border border-slate-800 text-center">
+                    <div class="text-[10px] text-slate-400 font-medium">전체 평균 오답률</div>
+                    <div id="admin-stat-avg-wrong-rate" class="font-jua text-lg sm:text-xl text-rose-400">0.0%</div>
+                </div>
+                <div class="bg-slate-950/80 p-2.5 rounded-2xl border border-slate-800 text-center">
+                    <div class="text-[10px] text-slate-400 font-medium">최다 오답 단어</div>
+                    <div id="admin-stat-top-wrong-word" class="font-jua text-sm sm:text-base text-yellow-300 truncate">-</div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between my-1.5 text-xs shrink-0 gap-2">
+                <div class="relative flex-1 max-w-xs">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-[11px]"></i>
+                    <input type="text" id="admin-search" oninput="renderAdminDashboard()" placeholder="제주어 단어 또는 뜻 검색..." class="w-full bg-slate-800 border border-slate-700 rounded-xl pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-400">
+                </div>
+
+                <div class="flex items-center space-x-2">
+                    <select id="admin-sort" onchange="renderAdminDashboard()" class="bg-slate-800 border border-slate-700 text-xs text-amber-300 font-jua rounded-xl px-2 py-1.5 focus:outline-none focus:border-amber-400">
+                        <option value="wrong_desc">오답률 높은 순 ⬇</option>
+                        <option value="wrong_asc">오답률 낮은 순 ⬆</option>
+                        <option value="asked_desc">출제 횟수 많은 순 ⬇</option>
+                        <option value="alphabetical">단어 가나다 순</option>
+                    </select>
+
+                    <button onclick="resetQuizStats()" class="bg-rose-950 hover:bg-rose-900 text-rose-300 border border-rose-600/50 px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition">
+                        <i class="fa-solid fa-rotate-left mr-1"></i> 통계 리셋
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex-1 bg-slate-950/80 rounded-2xl border border-slate-800 overflow-y-auto max-h-[48vh] p-1">
+                <table class="w-full text-left text-xs sm:text-sm">
+                    <thead class="bg-slate-800/90 text-rose-300 font-jua sticky top-0 border-b border-slate-700 z-10">
+                        <tr>
+                            <th class="p-2 text-center w-10">No</th>
+                            <th class="p-2">제주어 단어</th>
+                            <th class="p-2">의미 (뜻)</th>
+                            <th class="p-2 text-center">출제</th>
+                            <th class="p-2 text-center text-emerald-400">정답</th>
+                            <th class="p-2 text-center text-rose-400">오답</th>
+                            <th class="p-2 text-center w-36">오답률 (그래프)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-stats-tbody" class="divide-y divide-slate-800/60 font-medium">
+                        <!-- Stats injected dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pt-2 flex space-x-3 shrink-0">
+                <button onclick="returnToStart()" class="flex-1 bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-600 hover:to-slate-700 text-white font-jua text-base py-2.5 rounded-2xl border border-slate-600 transition active:scale-95 text-center">
+                    <i class="fa-solid fa-house mr-1.5"></i> 메인 화면으로 돌아가기
+                </button>
+            </div>
+
+        </div>
+
+        <!-- ==================== MODAL 1: QUIZ OVERLAY MODAL ==================== -->
+        <div id="quiz-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/85 backdrop-blur-md">
+            <div class="glass-panel w-full max-w-2xl rounded-3xl p-5 sm:p-7 shadow-2xl border-4 border-amber-400/80 relative overflow-hidden flex flex-col justify-between max-h-[90vh]">
+                
+                <div class="flex items-center justify-between mb-2">
+                    <span id="quiz-level-badge" class="bg-gradient-to-r from-amber-500 to-orange-500 text-white font-jua text-xs sm:text-sm px-3.5 py-1 rounded-full shadow">
+                        🍊 제주어 퀴즈
+                    </span>
+                </div>
+
+                <div class="bg-gradient-to-br from-amber-500 via-orange-500 to-amber-600 text-white p-5 sm:p-6 rounded-2xl shadow-inner text-center border-2 border-amber-300 my-1 relative group">
+                    <div class="text-xs text-amber-100 font-bold mb-1">다음 제주어 단어의 뜻으로 올바른 것은 무사?</div>
+                    <h2 id="question-word" class="font-jua text-4xl sm:text-5xl md:text-6xl text-yellow-100 drop-shadow-md my-1">
+                        삼춘
+                    </h2>
+                </div>
+
+                <div id="options-container" class="grid grid-cols-1 gap-2 my-3 overflow-y-auto max-h-[45vh] pr-1">
+                    <!-- Options injected dynamically -->
+                </div>
+
+                <div class="text-center text-xs text-slate-500 font-medium pt-1">
+                    정답 고르면 귤 1개 차곡차곡 담아집니다! (틀리면 도전 끝이우다)
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== MODAL 2: PASSWORD MODAL (RANK RESET) ==================== -->
+        <div id="password-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md">
+            <div class="glass-panel w-full max-w-sm rounded-3xl p-6 shadow-2xl border-4 border-amber-400/80 relative text-slate-800 animate-tangerine-in">
+                <div class="text-center mb-4">
+                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-2 text-2xl shadow-inner border border-amber-300">
+                        🔒
+                    </div>
+                    <h3 class="font-jua text-2xl text-slate-800">관리자 비밀번호</h3>
+                    <p class="text-xs text-slate-500 mt-1">랭킹 데이터를 초기화하려면 비밀번호를 입력하세요.</p>
+                </div>
+
+                <form onsubmit="handlePasswordSubmit(event)" class="space-y-4">
+                    <div>
+                        <input type="password" id="rank-reset-password" placeholder="비밀번호 입력" required class="w-full bg-slate-100 border-2 border-slate-300 rounded-xl px-4 py-3 font-bold text-slate-800 text-center text-lg focus:outline-none focus:border-amber-500 tracking-widest">
+                    </div>
+
+                    <div class="flex space-x-2">
+                        <button type="button" onclick="closePasswordModal()" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-jua py-3 rounded-xl transition">
+                            취소
+                        </button>
+                        <button type="submit" class="flex-1 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-jua py-3 rounded-xl shadow-md transition">
+                            초기화 실행
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ==================== MODAL 3: ADMIN ACCESS PASSWORD MODAL ==================== -->
+        <div id="admin-password-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md">
+            <div class="glass-panel w-full max-w-sm rounded-3xl p-6 shadow-2xl border-4 border-rose-500/80 relative text-slate-800 animate-tangerine-in">
+                <div class="text-center mb-4">
+                    <div class="w-12 h-12 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mx-auto mb-2 text-2xl shadow-inner border border-rose-300">
+                        ⚙️
+                    </div>
+                    <h3 class="font-jua text-2xl text-slate-800">관리자 모드 접속</h3>
+                    <p class="text-xs text-slate-500 mt-1">관리자 전용 기능입니다. 비밀번호를 입력하세요.</p>
+                </div>
+
+                <form onsubmit="handleAdminPasswordSubmit(event)" class="space-y-4">
+                    <div>
+                        <input type="password" id="admin-mode-password" placeholder="비밀번호 입력" maxlength="10" required class="w-full bg-slate-100 border-2 border-slate-300 rounded-xl px-4 py-3 font-bold text-slate-800 text-center text-xl focus:outline-none focus:border-rose-500 tracking-widest">
+                    </div>
+
+                    <div class="flex space-x-2">
+                        <button type="button" onclick="closeAdminPasswordModal()" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-jua py-3 rounded-xl transition">
+                            취소
+                        </button>
+                        <button type="submit" class="flex-1 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-jua py-3 rounded-xl shadow-md transition">
+                            접속하기
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ==================== MODAL 4: QUIZ STATS RESET PASSWORD MODAL ==================== -->
+        <div id="stat-reset-password-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md">
+            <div class="glass-panel w-full max-w-sm rounded-3xl p-6 shadow-2xl border-4 border-rose-500/80 relative text-slate-800 animate-tangerine-in">
+                <div class="text-center mb-4">
+                    <div class="w-12 h-12 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mx-auto mb-2 text-2xl shadow-inner border border-rose-300">
+                        🧹
+                    </div>
+                    <h3 class="font-jua text-2xl text-slate-800">통계 초기화 비밀번호</h3>
+                    <p class="text-xs text-slate-500 mt-1">퀴즈 단어 통계를 초기화하려면 비밀번호를 입력하세요.</p>
+                </div>
+
+                <form onsubmit="handleStatResetPasswordSubmit(event)" class="space-y-4">
+                    <div>
+                        <input type="password" id="stat-reset-password" placeholder="비밀번호 입력" maxlength="10" required class="w-full bg-slate-100 border-2 border-slate-300 rounded-xl px-4 py-3 font-bold text-slate-800 text-center text-xl focus:outline-none focus:border-rose-500 tracking-widest">
+                    </div>
+
+                    <div class="flex space-x-2">
+                        <button type="button" onclick="closeStatResetPasswordModal()" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-jua py-3 rounded-xl transition">
+                            취소
+                        </button>
+                        <button type="submit" class="flex-1 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-jua py-3 rounded-xl shadow-md transition">
+                            초기화 실행
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Toast Feedback Notification -->
+        <div id="toast-message" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white px-6 py-3 rounded-full font-bold shadow-2xl border-2 border-amber-400/60 transition-all duration-300 opacity-0 pointer-events-none transform translate-y-4 flex items-center space-x-2">
+            <span id="toast-icon">✨</span>
+            <span id="toast-text">알림 메세지</span>
+        </div>
+
+    </div>
+
+    <script>
+        // 구글 설문조사 URL (지정해주신 Google Form URL 연동)
+        const NAVER_SURVEY_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScAipyYlCZQv8pYCd5m-VU9QonkO7ilddZyamciAAlaKFDzFg/viewform?usp=publish-editor";
+
+        function openNaverSurveyForm() {
+            playSound('item');
+            window.open(NAVER_SURVEY_FORM_URL, '_blank');
+        }
+
+        function getJejuTitle(score) {
+            if (score >= 50) {
+                return {
+                    title: "🗿 인간 돌하르방",
+                    level: "50개 이상 (전설 등급)",
+                    desc: "제주어의 살아있는 전설! 제주 말과 혼이 완벽히 숨쉬는 명인우다!",
+                    badgeClass: "title-badge-sparkle border-yellow-300 text-yellow-100 font-extrabold"
+                };
+            } else if (score >= 21) {
+                return {
+                    title: "🍊 토종 제주인",
+                    level: "21~49개 수집",
+                    desc: "제주 맛과 정겨운 사투리를 모두 꿰뚫고 있는 진정한 토종 제주인우다!",
+                    badgeClass: "bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 border-orange-300 text-white font-extrabold"
+                };
+            } else if (score >= 10) {
+                return {
+                    title: "🌊 제주 8년차",
+                    level: "10~20개 수집",
+                    desc: "제주의 소식과 정서를 하영 잘 아는 제주 8년차 사람우다!",
+                    badgeClass: "bg-gradient-to-r from-teal-500 via-emerald-500 to-teal-600 border-teal-300 text-white font-bold"
+                };
+            } else if (score >= 5) {
+                return {
+                    title: "🌴 제주 3년차",
+                    level: "5~9개 수집",
+                    desc: "제주어에 눈을 뜨고 귤 맛을 깊이 알아가는 이주 3년차우다!",
+                    badgeClass: "bg-gradient-to-r from-sky-500 via-blue-500 to-indigo-500 border-sky-300 text-white font-bold"
+                };
+            } else if (score >= 1) {
+                return {
+                    title: "✈️ 육지사람",
+                    level: "1~4개 수집",
+                    desc: "이제 막 제주어의 매력에 살짝 빠져든 정겨운 육지 손님이우다!",
+                    badgeClass: "bg-gradient-to-r from-slate-600 via-slate-500 to-slate-700 border-slate-300 text-slate-100 font-medium"
+                };
+            } else {
+                return {
+                    title: "🌱 육지토박이",
+                    level: "0개 수집",
+                    desc: "제주 모험을 막 시작한 육지토박이! 다시 도전해봅서!",
+                    badgeClass: "bg-slate-700 border-slate-500 text-slate-300 font-normal"
+                };
+            }
+        }
+
+        const MUST_INCLUDE_JEJU_WORDS = [
+            { word: "서슬", correct: "겨울" },
+            { word: "선도록허다", correct: "시원하다" },
+            { word: "선반", correct: "쟁반" },
+            { word: "소드방", correct: "솥뚜껑" },
+            { word: "성님", correct: "형님" },
+            { word: "식게", correct: "제사" },
+            { word: "지접다", correct: "뜨겁다" },
+            { word: "천성", correct: "언제나" },
+            { word: "개껴시", correct: "해변" },
+            { word: "개역", correct: "보리를 볶아 만든 미숫가루" },
+            { word: "개와", correct: "호주머니" },
+            { word: "거옥", correct: "거북이" },
+            { word: "계실", correct: "털실" },
+            { word: "곤떡", correct: "쌀떡" },
+            { word: "골새", correct: "개울" },
+            { word: "괸당", correct: "친척, 이웃 (혈연·인척 공동체)" },
+            { word: "나록", correct: "벼" },
+            { word: "다강이", correct: "머리" },
+            { word: "닿다", correct: "쌓다" },
+            { word: "느런이", correct: "나란히" },
+            { word: "너부작이", correct: "넓적하게" },
+            { word: "눅지다", correct: "지우다" },
+            { word: "네슬르다", correct: "싫어하다" },
+            { word: "뎅강", correct: "묵직한 것이 자빠지는 꼴" },
+            { word: "다못", correct: "다만" },
+            { word: "더레이", correct: "더럽게" },
+            { word: "멧(멫)", correct: "몇" },
+            { word: "미러", correct: "모두" },
+            { word: "실피", correct: "슬퍼" },
+            { word: "이칙", correct: "일찍" },
+            { word: "지껍다", correct: "기쁘다" },
+            { word: "주멩기", correct: "주머니" },
+            { word: "상고지", correct: "무지개" },
+            { word: "게염지", correct: "개미" },
+            { word: "구젱기", correct: "소라" },
+            { word: "생이", correct: "새" },
+            { word: "놈삐", correct: "무" },
+            { word: "바릇", correct: "해산물" },
+            { word: "모감지-심다", correct: "멱살을 잡다" },
+            { word: "비바리", correct: "처녀, 젊은 여성" },
+            { word: "통시", correct: "화장실" },
+            { word: "똥꼬랑하다", correct: "둥글다" },
+            { word: "설러불다", correct: "하던 것을 그치고 하지 않다" },
+            { word: "속솜허다", correct: "조용하다" },
+            { word: "고라주다", correct: "말해주다" },
+            { word: "베지근허다", correct: "고기 국물이 진하고 개운하다" },
+            { word: "간세", correct: "게으름" },
+            { word: "재게재게", correct: "빨리빨리" },
+            { word: "느영나영", correct: "너하고 나하고" },
+            { word: "빌레", correct: "평평하고 넓은 바위" },
+            { word: "가새", correct: "가위" },
+            { word: "고른다", correct: "말하다" },
+            { word: "고팡", correct: "창고" },
+            { word: "모살", correct: "모래" },
+            { word: "가시어멍", correct: "장모" },
+            { word: "가시애비", correct: "장인" },
+            { word: "검질", correct: "잡초" },
+            { word: "넙지다", correct: "넓다" },
+            { word: "바당", correct: "바다" },
+            { word: "여시", correct: "여우" },
+            { word: "도새기", correct: "돼지" },
+            { word: "빙떡", correct: "메밀전에 소를 넣고 말아 만든 떡" },
+            { word: "곱딱하다", correct: "곱다, 예쁘다" },
+            { word: "올레", correct: "집 앞 좁은 골목길" },
+            { word: "하영", correct: "많이" },
+            { word: "옵서", correct: "오다" },
+            { word: "경허다", correct: "그렇게 하다" },
+            { word: "맨도롱 또똣", correct: "미지근하게 따뜻하다" },
+            { word: "삼춘", correct: "마을의 모든 웃어른을 친근하게 부르는 호칭" },
+            { word: "고냉이", correct: "고양이" },
+            { word: "고지", correct: "숲" },
+            { word: "숨비소리", correct: "해녀가 물질 후 물 위로 올라와 내쉬는 숨소리" },
+            { word: "몽생이", correct: "망아지" },
+            { word: "강생이", correct: "강아지" },
+            { word: "감저", correct: "고구마" },
+            { word: "도치", correct: "도끼" },
+            { word: "무사", correct: "왜" },
+            { word: "멜젓", correct: "멸치젓" },
+            { word: "미깡", correct: "귤" },
+            { word: "몬딱", correct: "모두, 전부" },
+            { word: "호꼼", correct: "조금" },
+            { word: "정낭", correct: "대문 대신 걸치는 나무 막대" },
+            { word: "구덕", correct: "대나무로 엮은 바구니" },
+            { word: "허벅", correct: "물을 길어 나르던 항아리" },
+            { word: "테우", correct: "통나무로 만든 전통 뗏목" },
+            { word: "요왕", correct: "용왕, 바다의 신" },
+            { word: "도채비", correct: "도깨비" },
+            { word: "지슬", correct: "감자" },
+            { word: "곤밥", correct: "쌀밥" },
+            { word: "몸국", correct: "모자반을 넣고 끓인 국" },
+            { word: "돗통시", correct: "돼지를 키우는 재래식 변소" },
+            { word: "소나이", correct: "사내, 남자" },
+            { word: "속솜하라", correct: "조용히 해라" },
+            { word: "오몽", correct: "몸의 움직임" },
+            { word: "조냥", correct: "절약, 아껴 씀" },
+            { word: "폭낭", correct: "팽나무" },
+            { word: "갈옷", correct: "감물을 들인 옷" },
+            { word: "놀", correct: "물결, 파도" },
+            { word: "지들커", correct: "땔감, 땔나무" },
+            { word: "굴묵", correct: "온돌방에 불을 때는 아궁이" },
+            { word: "눌", correct: "낟가리, 곡식 단이나 짚을 쌓아 놓은 더미" },
+            { word: "우영팟", correct: "집 울타리 안의 텃밭" },
+            { word: "소중이(소중기)", correct: "해녀가 입던 물옷" },
+            { word: "테왁", correct: "해녀가 물에 띄워 의지하는 박 모양 부표" },
+            { word: "망사리", correct: "해녀가 채취물을 담는 그물 주머니" },
+            { word: "빗창", correct: "전복을 떼어 내는 쇠 도구" },
+            { word: "불턱", correct: "해녀들이 불을 쬐며 쉬던 곳" },
+            { word: "영등할망", correct: "음력 2월에 바람을 몰고 오는 여신" },
+            { word: "설문대할망", correct: "제주를 만들었다는 창조 여신" },
+            { word: "수눌음", correct: "품앗이" },
+            { word: "쉐", correct: "소" },
+            { word: "멩심하다", correct: "조심하다, 명심하다" },
+            { word: "지꺼지다", correct: "기뻐하다" }
+        ];
+
+        let quizPool = [];
+        let currentWordObj = null;
+
+        function initQuizPool() {
+            let shuffled = shuffle([...MUST_INCLUDE_JEJU_WORDS]);
+            if (shuffled.length > 1 && currentWordObj && shuffled[shuffled.length - 1].word === currentWordObj.word) {
+                const temp = shuffled.pop();
+                shuffled.unshift(temp);
+            }
+            quizPool = shuffled;
+        }
+
+        let audioCtx = null;
+
+        function getAudioCtx() {
+            if (!audioCtx) {
+                try {
+                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                    if (AudioContextClass) {
+                        audioCtx = new AudioContextClass();
+                    }
+                } catch(e) {
+                    console.warn("AudioContext warning:", e);
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(() => {});
+            }
+            return audioCtx;
+        }
+
+        if (typeof CanvasRenderingContext2D !== 'undefined' && !CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, radii) {
+                let r = radii || 0;
+                if (typeof r === 'number') r = {tl: r, tr: r, br: r, bl: r};
+                this.beginPath();
+                this.moveTo(x + r.tl, y);
+                this.lineTo(x + w - r.tr, y);
+                this.quadraticCurveTo(x + w, y, x + w, y + r.tr);
+                this.lineTo(x + w, y + h - r.br);
+                this.quadraticCurveTo(x + w, y + h, x + w - r.br, y + h);
+                this.lineTo(x + r.bl, y + h);
+                this.quadraticCurveTo(x, y + h, x, y + h - r.bl);
+                this.lineTo(x, y + r.tl);
+                this.quadraticCurveTo(x, y, x + r.tl, y);
+                this.closePath();
+                return this;
+            };
+        }
+
+        function playSound(type) {
+            try {
+                const ctx = getAudioCtx();
+                if (!ctx) return;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                const now = ctx.currentTime;
+
+                if (type === 'item' || type === 'coin') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(587.33, now);
+                    osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+                    osc.start(now);
+                    osc.stop(now + 0.12);
+                } else if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.setValueAtTime(659.25, now + 0.08);
+                    osc.frequency.setValueAtTime(783.99, now + 0.16);
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'wrong' || type === 'water') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.setValueAtTime(110, now + 0.2);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                } else if (type === 'jump') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(260, now);
+                    osc.frequency.exponentialRampToValueAtTime(600, now + 0.14);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+                    osc.start(now);
+                    osc.stop(now + 0.14);
+                } else if (type === 'slide') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(450, now);
+                    osc.frequency.exponentialRampToValueAtTime(200, now + 0.12);
+                    gain.gain.setValueAtTime(0.18, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+                    osc.start(now);
+                    osc.stop(now + 0.12);
+                } else if (type === 'victory') {
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((freq, idx) => {
+                        const o = ctx.createOscillator();
+                        const g = ctx.createGain();
+                        o.connect(g);
+                        g.connect(ctx.destination);
+                        o.type = 'triangle';
+                        o.frequency.setValueAtTime(freq, now + idx * 0.12);
+                        g.gain.setValueAtTime(0.3, now + idx * 0.12);
+                        g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + 0.25);
+                        o.start(now + idx * 0.12);
+                        o.stop(now + idx * 0.12 + 0.25);
+                    });
+                }
+            } catch(e) {
+                console.warn("Audio error:", e);
+            }
+        }
+
+        let currentUser = { grade: '3', classNum: '1', studentNum: '1', name: '탐라어린이' };
+        let currentGameMode = 'stairs';
+        let currentScore = 0; 
+        let isGameOver = false;
+
+        let baseWaterSpeed = 2.4;
+        let waterSpeed = 2.4;
+        let waterY = 0;
+        let maxClimbedY = 0;
+
+        let xrunDistance = 0;
+        let xrunSpeed = 6.0;
+        let xrunGroundY = 0;
+        let xrunObstacles = [];
+        let xrunTangerines = [];
+        let xrunScenery = [];
+        let xrunSpawnTimer = 0;
+
+        let gameTimerInterval = null;
+        let elapsedSeconds = 0;
+
+        let fallenParts = [];
+
+        let canvas, ctx;
+        let animationFrameId;
+        let isRunnerPaused = false;
+
+        const player = {
+            x: 180,
+            y: 0,
+            width: 42,
+            height: 56,
+            vx: 0,
+            vy: 0,
+            speed: 6.2,
+            jumpPower: -14.2,
+            grounded: false,
+            facing: 1,
+            walkFrame: 0,
+            jumpCount: 0,
+            rotation: 0,
+            isDoubleJumping: false,
+            crouched: false
+        };
+
+        const gravity = 0.60;
+        let cameraX = 0;
+        let cameraY = 0;
+
+        const keys = { left: false, right: false, jump: false, slide: false };
+
+        let startGroundY = 0;
+        let platforms = [];
+        let tangerines = [];
+        let sceneryObjects = [];
+
+        let highestPlatformY = 0;
+        let lastStairX = 200;
+        let stairDirection = 1;
+
+        let stepsSinceLastTangerine = 0;
+        let targetTangerineGap = 3; 
+
+        function hideAllScreens() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('game-select-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('survey-screen').classList.add('hidden');
+            document.getElementById('ranking-screen').classList.add('hidden');
+            document.getElementById('admin-screen').classList.add('hidden');
+            document.getElementById('quiz-modal').classList.add('hidden');
+            
+            const pwdModal = document.getElementById('password-modal');
+            if (pwdModal) pwdModal.classList.add('hidden');
+
+            const adminPwdModal = document.getElementById('admin-password-modal');
+            if (adminPwdModal) adminPwdModal.classList.add('hidden');
+
+            const statResetPwdModal = document.getElementById('stat-reset-password-modal');
+            if (statResetPwdModal) statResetPwdModal.classList.add('hidden');
+
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            if (gameTimerInterval) clearInterval(gameTimerInterval);
+        }
+
+        function returnToStart() {
+            playSound('item');
+            hideAllScreens();
+            document.getElementById('login-screen').classList.remove('hidden');
+        }
+
+        function handleLoginSubmit(event) {
+            event.preventDefault();
+            const grade = document.getElementById('user-grade').value.trim();
+            const classNum = document.getElementById('user-class').value.trim();
+            const studentNum = document.getElementById('user-number').value.trim();
+            const name = document.getElementById('user-name').value.trim();
+
+            if (!grade || !classNum || !studentNum || !name) {
+                showToast("모든 학생 정보를 입력해주세요!", "⚠️");
+                return;
+            }
+
+            currentUser = { grade, classNum, studentNum, name };
+            showGameSelectionScreen();
+        }
+
+        function showGameSelectionScreen() {
+            playSound('item');
+            hideAllScreens();
+            document.getElementById('select-user-greeting').innerText = `${currentUser.grade}학년 ${currentUser.classNum}반 ${currentUser.studentNum}번 ${currentUser.name}님, 원하시는 게임을 선택해주세요!`;
+            document.getElementById('game-select-screen').classList.remove('hidden');
+        }
+
+        function selectGameMode(mode) {
+            currentGameMode = mode;
+            startGame();
+        }
+
+        function startGame() {
+            playSound('item');
+            hideAllScreens();
+            document.getElementById('game-screen').classList.remove('hidden');
+
+            document.getElementById('user-hud-info').innerText = `${currentUser.grade}학년 ${currentUser.classNum}반 ${currentUser.studentNum}번 ${currentUser.name}`;
+
+            currentScore = 0;
+            isGameOver = false;
+            elapsedSeconds = 0;
+            fallenParts = [];
+            currentWordObj = null;
+
+            initQuizPool();
+
+            const ctrlLeft = document.getElementById('ctrl-left-container');
+            const btnSlide = document.getElementById('btn-slide');
+            const dangerLabel = document.getElementById('danger-label-text');
+
+            if (currentGameMode === 'stairs') {
+                ctrlLeft.classList.remove('hidden');
+                btnSlide.classList.add('hidden');
+                if (dangerLabel) dangerLabel.innerText = "🌊 바당 수위";
+            } else {
+                ctrlLeft.classList.add('hidden');
+                btnSlide.classList.remove('hidden');
+                if (dangerLabel) dangerLabel.innerText = "🏃‍♂️ 해안도로 주행";
+            }
+
+            updateBasketUI();
+            updateScoreUI();
+            startTimer();
+
+            initRunnerCanvas();
+        }
+
+        function startTimer() {
+            if (gameTimerInterval) clearInterval(gameTimerInterval);
+            const timerDisplay = document.getElementById('timer-display');
+            timerDisplay.innerText = '⏱️ 00:00';
+
+            gameTimerInterval = setInterval(() => {
+                if (!isRunnerPaused && !isGameOver) {
+                    elapsedSeconds++;
+                    timerDisplay.innerText = `⏱️ ${formatTime(elapsedSeconds)}`;
+                }
+            }, 1000);
+        }
+
+        function formatTime(seconds) {
+            const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
+            const secs = String(seconds % 60).padStart(2, '0');
+            return `${mins}:${secs}`;
+        }
+
+        function finishGameAndShowSurvey(isWin, cause = 'quiz') {
+            if (gameTimerInterval) clearInterval(gameTimerInterval);
+            isGameOver = true;
+
+            let metricVal = 0;
+            let metricText = "0m";
+            let metricLabel = "최고 고도";
+
+            if (currentGameMode === 'stairs') {
+                metricVal = Math.max(0, Math.floor((startGroundY - maxClimbedY) / 12));
+                metricText = `${metricVal}m`;
+                metricLabel = "최고 고도";
+            } else {
+                metricVal = Math.floor(xrunDistance / 10);
+                metricText = `${metricVal}m`;
+                metricLabel = "완주 거리";
+            }
+
+            const titleObj = getJejuTitle(currentScore);
+
+            const record = {
+                id: Date.now(),
+                grade: String(currentUser.grade),
+                classNum: String(currentUser.classNum),
+                studentNum: String(currentUser.studentNum),
+                name: currentUser.name,
+                gameMode: currentGameMode,
+                score: currentScore,
+                jejuTitle: titleObj.title,
+                metricValue: metricVal,
+                timeSec: elapsedSeconds,
+                date: new Date().toLocaleDateString('ko-KR')
+            };
+
+            let existing = JSON.parse(localStorage.getItem('jeju_stair_rankings') || '[]');
+            const existingIdx = existing.findIndex(item => 
+                String(item.grade) === String(currentUser.grade) &&
+                String(item.classNum) === String(currentUser.classNum) &&
+                String(item.studentNum) === String(currentUser.studentNum) &&
+                (item.gameMode || 'stairs') === currentGameMode
+            );
+
+            if (existingIdx !== -1) {
+                const prev = existing[existingIdx];
+                let isBetter = false;
+                if (record.score > prev.score) isBetter = true;
+                else if (record.score === prev.score && record.metricValue > (prev.metricValue || 0)) isBetter = true;
+                else if (record.score === prev.score && record.metricValue === (prev.metricValue || 0) && record.timeSec < prev.timeSec) isBetter = true;
+
+                if (isBetter) {
+                    existing[existingIdx] = record;
+                }
+            } else {
+                existing.push(record);
+            }
+
+            localStorage.setItem('jeju_stair_rankings', JSON.stringify(existing));
+
+            const titleBadge = document.getElementById('survey-res-title-badge');
+            const titleText = document.getElementById('survey-res-title-text');
+            const titleDesc = document.getElementById('survey-res-title-desc');
+
+            if (titleBadge && titleText && titleDesc) {
+                titleText.innerText = titleObj.title;
+                titleDesc.innerText = titleObj.desc;
+                titleBadge.className = `w-full mt-2 py-1.5 px-3 rounded-xl border flex items-center justify-between gap-2 transition-all duration-300 ${titleObj.badgeClass}`;
+            }
+
+            const badge = document.getElementById('survey-res-status-badge');
+            if (cause === 'water' || cause === 'obstacle') {
+                badge.innerText = cause === 'water' ? '🌊 바다 수위에 닿았수다! 다음에 또 도전해봅서~' : '💥 장애물에 부딪혔수다! 새(갈매기)는 숙이기로만 피할 수 있우다!';
+                badge.className = 'bg-sky-600 text-white font-jua text-xs px-2.5 py-0.5 rounded-full inline-block shadow';
+            } else if (currentScore >= 50) {
+                badge.innerText = `🏆 전설의 [인간 돌하르방] 달성우다!`;
+                badge.className = 'bg-amber-500 text-white font-jua text-xs px-2.5 py-0.5 rounded-full inline-block shadow';
+                playSound('victory');
+                if (typeof confetti === 'function') {
+                    confetti({ particleCount: 180, spread: 110, origin: { y: 0.6 } });
+                }
+            } else if (currentScore >= 1) {
+                badge.innerText = `🎉 무사 경 잘하맨! 정겨운 칭호 달성우다!`;
+                badge.className = 'bg-emerald-500 text-white font-jua text-xs px-2.5 py-0.5 rounded-full inline-block shadow';
+                playSound('victory');
+            } else {
+                badge.innerText = '💥 퀴즈 오답이우다! 다음 기회에 또 도전해봅서!';
+                badge.className = 'bg-rose-500 text-white font-jua text-xs px-2.5 py-0.5 rounded-full inline-block shadow';
+                playSound('wrong');
+            }
+
+            document.getElementById('survey-res-student-info').innerText = `${currentUser.grade}학년 ${currentUser.classNum}반 ${currentUser.studentNum}번 ${currentUser.name} (${currentGameMode === 'stairs' ? '한라산 계단' : '제주도 X런'})`;
+            document.getElementById('survey-res-score').innerText = `${currentScore}개`;
+            document.getElementById('survey-res-metric-label').innerText = metricLabel;
+            document.getElementById('survey-res-height').innerText = metricText;
+            document.getElementById('survey-res-time').innerText = formatTime(elapsedSeconds);
+
+            showSurveyScreen();
+        }
+
+        function showSurveyScreen() {
+            hideAllScreens();
+            document.getElementById('survey-screen').classList.remove('hidden');
+
+            const qrcodeContainer = document.getElementById('naver-survey-qrcode');
+            if (qrcodeContainer) {
+                qrcodeContainer.innerHTML = '';
+                if (typeof QRCode !== 'undefined') {
+                    new QRCode(qrcodeContainer, {
+                        text: NAVER_SURVEY_FORM_URL,
+                        width: 160,
+                        height: 160,
+                        colorDark : "#0f172a",
+                        colorLight : "#ffffff",
+                        correctLevel : QRCode.CorrectLevel.H
+                    });
+                }
+            }
+        }
+
+        function showRankingScreen() {
+            hideAllScreens();
+            document.getElementById('ranking-screen').classList.remove('hidden');
+            renderLeaderboardTable();
+        }
+
+        function renderLeaderboardTable() {
+            const tbody = document.getElementById('ranking-tbody');
+            const searchVal = (document.getElementById('rank-search').value || '').toLowerCase().trim();
+            
+            let rawList = JSON.parse(localStorage.getItem('jeju_stair_rankings') || '[]');
+
+            const uniqueMap = new Map();
+            rawList.forEach(item => {
+                const gMode = item.gameMode || 'stairs';
+                const key = `${item.grade}-${item.classNum}-${item.studentNum}-${gMode}`;
+                if (!uniqueMap.has(key)) {
+                    uniqueMap.set(key, item);
+                } else {
+                    const prev = uniqueMap.get(key);
+                    let isBetter = false;
+                    if (item.score > prev.score) isBetter = true;
+                    else if (item.score === prev.score && (item.metricValue || 0) > (prev.metricValue || 0)) isBetter = true;
+                    else if (item.score === prev.score && (item.metricValue || 0) === (prev.metricValue || 0) && item.timeSec < prev.timeSec) isBetter = true;
+                    
+                    if (isBetter) uniqueMap.set(key, item);
+                }
+            });
+
+            let list = Array.from(uniqueMap.values());
+
+            if (searchVal) {
+                list = list.filter(item => 
+                    item.name.toLowerCase().includes(searchVal) || 
+                    `${item.grade}학년`.includes(searchVal) || 
+                    `${item.classNum}반`.includes(searchVal)
+                );
+            }
+
+            list.sort((a, b) => {
+                if (b.score !== a.score) return b.score - a.score;
+                if ((b.metricValue || 0) !== (a.metricValue || 0)) return (b.metricValue || 0) - (a.metricValue || 0);
+                return a.timeSec - b.timeSec;
+            });
+
+            if (list.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="p-8 text-center text-slate-500">
+                            등록된 기록이 없우다! 혼저 첫 번째 도전 주인공이 되어봅서!
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = '';
+            list.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = index % 2 === 0 ? 'bg-slate-900/60 hover:bg-slate-800/60' : 'bg-slate-950/60 hover:bg-slate-800/60';
+
+                let medal = `${index + 1}위`;
+                if (index === 0) medal = '🥇 1위';
+                else if (index === 1) medal = '🥈 2위';
+                else if (index === 2) medal = '🥉 3위';
+
+                const titleObj = getJejuTitle(item.score);
+                const modeBadge = (item.gameMode === 'xrun') 
+                    ? '<span class="px-2 py-0.5 rounded-lg bg-teal-500/20 text-teal-300 border border-teal-500/40 font-jua text-xs">🏃‍♂️ 제주 X런</span>'
+                    : '<span class="px-2 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40 font-jua text-xs">🧗‍♂️ 무한계단</span>';
+
+                tr.innerHTML = `
+                    <td class="p-2 text-center font-jua text-amber-300 text-xs sm:text-sm">${medal}</td>
+                    <td class="p-2 font-bold text-white text-xs sm:text-sm">
+                        <span class="text-amber-400 font-jua">${item.grade}학년 ${item.classNum}반 ${item.studentNum}번</span> ${item.name}
+                    </td>
+                    <td class="p-2 text-center">${modeBadge}</td>
+                    <td class="p-2 text-center">
+                        <span class="px-2.5 py-0.5 rounded-xl text-[11px] border ${titleObj.badgeClass} shadow-sm inline-block">
+                            ${titleObj.title}
+                        </span>
+                    </td>
+                    <td class="p-2 text-center font-jua text-amber-400 text-xs sm:text-sm">${item.score}개</td>
+                    <td class="p-2 text-center font-jua text-teal-300 text-xs sm:text-sm">${item.metricValue || 0}m</td>
+                    <td class="p-2 text-center font-mono text-emerald-400 text-xs">${formatTime(item.timeSec)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        /* ==================== ADMIN DASHBOARD ==================== */
+        function openAdminPasswordModal() {
+            playSound('item');
+            const modal = document.getElementById('admin-password-modal');
+            const input = document.getElementById('admin-mode-password');
+            if (modal && input) {
+                input.value = '';
+                modal.classList.remove('hidden');
+                setTimeout(() => input.focus(), 100);
+            }
+        }
+
+        function closeAdminPasswordModal() {
+            playSound('item');
+            const modal = document.getElementById('admin-password-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function handleAdminPasswordSubmit(event) {
+            event.preventDefault();
+            const input = document.getElementById('admin-mode-password');
+            const password = input ? input.value : '';
+
+            if (password === '1104') {
+                closeAdminPasswordModal();
+                showAdminDashboard();
+            } else {
+                playSound('wrong');
+                showToast("비밀번호가 올바르지 않습니다!", "❌");
+                if (input) {
+                    input.value = '';
+                    input.focus();
+                }
+            }
+        }
+
+        function showAdminDashboard() {
+            hideAllScreens();
+            document.getElementById('admin-screen').classList.remove('hidden');
+            renderAdminDashboard();
+            showToast("관리자 대시보드에 접속하였습니다.", "⚙️");
+        }
+
+        function getQuizStats() {
+            return JSON.parse(localStorage.getItem('jeju_quiz_stats') || '{}');
+        }
+
+        function saveQuizStats(stats) {
+            localStorage.setItem('jeju_quiz_stats', JSON.stringify(stats));
+        }
+
+        function recordQuizResult(word, isCorrect) {
+            let stats = getQuizStats();
+            if (!stats[word]) {
+                stats[word] = { asked: 0, wrong: 0, correct: 0 };
+            }
+            stats[word].asked += 1;
+            if (isCorrect) {
+                stats[word].correct += 1;
+            } else {
+                stats[word].wrong += 1;
+            }
+            saveQuizStats(stats);
+        }
+
+        function renderAdminDashboard() {
+            const stats = getQuizStats();
+            const searchVal = (document.getElementById('admin-search').value || '').toLowerCase().trim();
+            const sortBy = document.getElementById('admin-sort').value;
+            const tbody = document.getElementById('admin-stats-tbody');
+
+            let totalAskedAll = 0;
+            let totalWrongAll = 0;
+
+            const list = MUST_INCLUDE_JEJU_WORDS.map(w => {
+                const s = stats[w.word] || { asked: 0, wrong: 0, correct: 0 };
+                const wrongRate = s.asked > 0 ? (s.wrong / s.asked) * 100 : 0;
+                
+                totalAskedAll += s.asked;
+                totalWrongAll += s.wrong;
+
+                return {
+                    word: w.word,
+                    correctMeaning: w.correct,
+                    asked: s.asked,
+                    correct: s.correct || 0,
+                    wrong: s.wrong || 0,
+                    wrongRate: wrongRate
+                };
+            });
+
+            const avgRate = totalAskedAll > 0 ? (totalWrongAll / totalAskedAll) * 100 : 0;
+            document.getElementById('admin-stat-total-asked').innerText = `${totalAskedAll}회`;
+            document.getElementById('admin-stat-avg-wrong-rate').innerText = `${avgRate.toFixed(1)}%`;
+
+            const topWrongWordObj = [...list].sort((a, b) => b.wrongRate - a.wrongRate || b.wrong - a.wrong)[0];
+            if (topWrongWordObj && topWrongWordObj.asked > 0) {
+                document.getElementById('admin-stat-top-wrong-word').innerText = `${topWrongWordObj.word} (${topWrongWordObj.wrongRate.toFixed(0)}%)`;
+            } else {
+                document.getElementById('admin-stat-top-wrong-word').innerText = `-`;
+            }
+
+            let filteredList = list.filter(item => 
+                item.word.toLowerCase().includes(searchVal) || 
+                item.correctMeaning.toLowerCase().includes(searchVal)
+            );
+
+            filteredList.sort((a, b) => {
+                if (sortBy === 'wrong_desc') return b.wrongRate - a.wrongRate || b.asked - a.asked;
+                if (sortBy === 'wrong_asc') return a.wrongRate - b.wrongRate;
+                if (sortBy === 'asked_desc') return b.asked - a.asked;
+                if (sortBy === 'alphabetical') return a.word.localeCompare(b.word, 'ko');
+                return 0;
+            });
+
+            if (filteredList.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="p-8 text-center text-slate-500">
+                            검색 결과에 해당하는 단어가 없습니다.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = '';
+            filteredList.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = index % 2 === 0 ? 'bg-slate-900/60 hover:bg-slate-800/60' : 'bg-slate-950/60 hover:bg-slate-800/60';
+
+                const rateFormatted = item.asked > 0 ? `${item.wrongRate.toFixed(1)}%` : '0.0%';
+
+                let barColor = 'bg-emerald-500';
+                let textColor = 'text-emerald-400';
+                if (item.wrongRate >= 70) {
+                    barColor = 'bg-rose-500';
+                    textColor = 'text-rose-400 font-bold';
+                } else if (item.wrongRate >= 40) {
+                    barColor = 'bg-amber-500';
+                    textColor = 'text-amber-400';
+                }
+
+                tr.innerHTML = `
+                    <td class="p-2.5 text-center text-slate-400 text-xs">${index + 1}</td>
+                    <td class="p-2.5 font-jua text-amber-300 text-sm sm:text-base">${item.word}</td>
+                    <td class="p-2.5 text-slate-200 text-xs font-semibold">${item.correctMeaning}</td>
+                    <td class="p-2.5 text-center font-mono text-slate-300 text-xs">${item.asked}회</td>
+                    <td class="p-2.5 text-center font-mono text-emerald-400 text-xs">${item.correct}</td>
+                    <td class="p-2.5 text-center font-mono text-rose-400 text-xs">${item.wrong}</td>
+                    <td class="p-2.5 text-center">
+                        <div class="flex items-center space-x-2">
+                            <div class="flex-1 bg-slate-800 h-3 rounded-full overflow-hidden border border-slate-700">
+                                <div class="${barColor} h-full transition-all duration-500" style="width: ${item.asked > 0 ? item.wrongRate : 0}%"></div>
+                            </div>
+                            <span class="font-mono text-xs ${textColor} w-12 text-right">${rateFormatted}</span>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function resetQuizStats() {
+            playSound('item');
+            const modal = document.getElementById('stat-reset-password-modal');
+            const input = document.getElementById('stat-reset-password');
+            if (modal && input) {
+                input.value = '';
+                modal.classList.remove('hidden');
+                setTimeout(() => input.focus(), 100);
+            }
+        }
+
+        function closeStatResetPasswordModal() {
+            playSound('item');
+            const modal = document.getElementById('stat-reset-password-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function handleStatResetPasswordSubmit(event) {
+            event.preventDefault();
+            const input = document.getElementById('stat-reset-password');
+            const password = input ? input.value : '';
+
+            if (password === '1104') {
+                localStorage.removeItem('jeju_quiz_stats');
+                renderAdminDashboard();
+                closeStatResetPasswordModal();
+                showToast("퀴즈 통계가 성공적으로 초기화되었습니다.", "🧹");
+                playSound('correct');
+            } else {
+                playSound('wrong');
+                showToast("비밀번호가 올바르지 않습니다!", "❌");
+                if (input) {
+                    input.value = '';
+                    input.focus();
+                }
+            }
+        }
+
+        function clearAllRankings() {
+            playSound('item');
+            const modal = document.getElementById('password-modal');
+            const input = document.getElementById('rank-reset-password');
+            if (modal && input) {
+                input.value = '';
+                modal.classList.remove('hidden');
+                setTimeout(() => input.focus(), 100);
+            }
+        }
+
+        function closePasswordModal() {
+            playSound('item');
+            const modal = document.getElementById('password-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function handlePasswordSubmit(event) {
+            event.preventDefault();
+            const input = document.getElementById('rank-reset-password');
+            const password = input ? input.value : '';
+
+            if (password === '1104') {
+                localStorage.removeItem('jeju_stair_rankings');
+                renderLeaderboardTable();
+                closePasswordModal();
+                showToast("랭킹 데이터가 초기화되었습니다.", "🧹");
+                playSound('correct');
+            } else {
+                playSound('wrong');
+                showToast("비밀번호가 올바르지 않습니다!", "❌");
+                if (input) {
+                    input.value = '';
+                    input.focus();
+                }
+            }
+        }
+
+        function shuffle(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        let toastTimeout = null;
+        function showToast(text, icon = '✨') {
+            const toast = document.getElementById('toast-message');
+            const toastText = document.getElementById('toast-text');
+            const toastIcon = document.getElementById('toast-icon');
+            if (!toast) return;
+
+            if (toastText) toastText.innerText = text;
+            if (toastIcon) toastIcon.innerText = icon;
+
+            toast.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+            }, 2500);
+        }
+
+        function updateScoreUI() {
+            document.getElementById('score-text').innerText = `${currentScore}개`;
+        }
+
+        function updateBasketUI() {
+            const basket = document.getElementById('tangerine-basket');
+            if (!basket) return;
+            
+            const countInBasket = currentScore % 5 === 0 && currentScore > 0 ? 5 : currentScore % 5;
+            basket.innerHTML = `
+                <div class="flex items-center space-x-1 font-jua text-amber-300 text-xs sm:text-sm">
+                    <span>🍊 수집 개수:</span>
+                    <span class="text-yellow-300 text-base font-bold">${currentScore}개</span>
+                </div>
+                <div class="flex items-center space-x-1 ml-3">
+                    ${Array.from({ length: currentScore > 0 ? countInBasket : 0 })
+                        .map(() => '<span class="text-xs sm:text-sm animate-pulse">🍊</span>').join('')}
+                </div>
+            `;
+        }
+
+        function pauseAndTriggerQuiz() {
+            isRunnerPaused = true;
+
+            if (quizPool.length === 0) {
+                initQuizPool();
+            }
+
+            currentWordObj = quizPool.pop();
+
+            document.getElementById('quiz-level-badge').innerText = `🍊 제주어 퀴즈 (${currentScore + 1}번째 도전)`;
+            document.getElementById('question-word').innerText = currentWordObj.word;
+
+            let choices = [currentWordObj.correct];
+            const otherAnswers = MUST_INCLUDE_JEJU_WORDS
+                .map(w => w.correct)
+                .filter(c => c !== currentWordObj.correct);
+            
+            const shuffledOthers = shuffle(otherAnswers);
+
+            while (choices.length < 3 && shuffledOthers.length > 0) {
+                const wrongChoice = shuffledOthers.pop();
+                if (!choices.includes(wrongChoice)) {
+                    choices.push(wrongChoice);
+                }
+            }
+
+            choices = shuffle(choices);
+
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            choices.forEach((choice, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full bg-white hover:bg-amber-50 text-slate-800 font-semibold p-3 sm:p-3.5 rounded-xl border-2 border-slate-200 hover:border-amber-400 text-left text-xs sm:text-sm shadow-sm transition flex items-center space-x-3 active:scale-[0.99]';
+                btn.innerHTML = `
+                    <span class="w-6 h-6 rounded-full bg-amber-100 text-amber-800 font-jua text-xs flex items-center justify-center shrink-0 border border-amber-300">${idx + 1}</span>
+                    <span class="flex-1 leading-snug">${choice}</span>
+                `;
+                btn.onclick = () => handleQuizAnswer(btn, choice, currentWordObj.correct);
+                container.appendChild(btn);
+            });
+
+            document.getElementById('quiz-modal').classList.remove('hidden');
+        }
+
+        function handleQuizAnswer(selectedBtn, selectedChoice, correctChoice) {
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(btn => btn.onclick = null);
+
+            const isCorrect = (selectedChoice === correctChoice);
+
+            if (currentWordObj) {
+                recordQuizResult(currentWordObj.word, isCorrect);
+            }
+
+            if (isCorrect) {
+                playSound('correct');
+                selectedBtn.classList.remove('bg-white', 'border-slate-200');
+                selectedBtn.classList.add('bg-emerald-500', 'border-emerald-600', 'text-white');
+
+                currentScore++;
+                updateBasketUI();
+                updateScoreUI();
+
+                showToast("✨ 맞수다 맞수! 귤 1개를 바구니에 담았우다!", "🍊");
+
+                setTimeout(() => {
+                    document.getElementById('quiz-modal').classList.add('hidden');
+                    isRunnerPaused = false;
+                    gameLoop();
+                }, 750);
+
+            } else {
+                playSound('wrong');
+                selectedBtn.classList.remove('bg-white', 'border-slate-200');
+                selectedBtn.classList.add('bg-rose-500', 'border-rose-600', 'text-white');
+
+                allBtns.forEach(btn => {
+                    if (btn.innerText.includes(correctChoice)) {
+                        btn.classList.add('bg-amber-100', 'border-amber-500', 'text-amber-900', 'font-bold');
+                    }
+                });
+
+                triggerShatterAndFall();
+                showToast("💥 아차차! 오답이우다~ 돌하르방이 스르륵 무너져불었네예!", "💥");
+
+                setTimeout(() => {
+                    document.getElementById('quiz-modal').classList.add('hidden');
+                    finishGameAndShowSurvey(false, 'quiz');
+                }, 1200);
+            }
+        }
+
+        function initRunnerCanvas() {
+            canvas = document.getElementById('runner-canvas');
+            if (!canvas) return;
+            ctx = canvas.getContext('2d');
+
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+
+            if (currentGameMode === 'stairs') {
+                buildInfiniteParkourWorld();
+            } else {
+                buildXRunWorld();
+            }
+
+            setupControls();
+
+            isRunnerPaused = false;
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            gameLoop();
+        }
+
+        function gameLoop() {
+            if (!isRunnerPaused && !isGameOver) {
+                if (currentGameMode === 'stairs') {
+                    updateStairsGame();
+                    renderStairsGame();
+                } else {
+                    updateXRunGame();
+                    renderXRunGame();
+                }
+                animationFrameId = requestAnimationFrame(gameLoop);
+            }
+        }
+
+        function triggerJump() {
+            if (isGameOver || isRunnerPaused) return;
+
+            if (player.grounded) {
+                player.vy = player.jumpPower;
+                player.grounded = false;
+                player.jumpCount = 1;
+                player.rotation = 0;
+                player.isDoubleJumping = false;
+                playSound('jump');
+            } else if (player.jumpCount < 2) {
+                player.vy = player.jumpPower * 0.92;
+                player.jumpCount = 2;
+                player.rotation = 0;
+                player.isDoubleJumping = true;
+                playSound('jump');
+            }
+        }
+
+        function triggerSlide(active) {
+            if (isGameOver || isRunnerPaused) return;
+            if (currentGameMode === 'xrun') {
+                keys.slide = active;
+                player.crouched = active;
+                if (active && player.grounded) {
+                    playSound('slide');
+                }
+            }
+        }
+
+        let controlsBound = false;
+        function setupControls() {
+            if (controlsBound) return;
+            controlsBound = true;
+
+            window.addEventListener('keydown', (e) => {
+                if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = true;
+                if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = true;
+                if (e.code === 'ArrowDown' || e.code === 'KeyS') triggerSlide(true);
+                if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
+                    if (!e.repeat) {
+                        triggerJump();
+                    }
+                    keys.jump = true;
+                    e.preventDefault();
+                }
+            });
+
+            window.addEventListener('keyup', (e) => {
+                if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = false;
+                if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
+                if (e.code === 'ArrowDown' || e.code === 'KeyS') triggerSlide(false);
+                if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') keys.jump = false;
+            });
+
+            const btnLeft = document.getElementById('btn-left');
+            const btnRight = document.getElementById('btn-right');
+            const btnJump = document.getElementById('btn-jump');
+            const btnSlide = document.getElementById('btn-slide');
+
+            if (btnLeft) {
+                const startL = (e) => { e.preventDefault(); keys.left = true; };
+                const endL = (e) => { e.preventDefault(); keys.left = false; };
+                btnLeft.addEventListener('mousedown', startL);
+                btnLeft.addEventListener('mouseup', endL);
+                btnLeft.addEventListener('touchstart', startL);
+                btnLeft.addEventListener('touchend', endL);
+            }
+
+            if (btnRight) {
+                const startR = (e) => { e.preventDefault(); keys.right = true; };
+                const endR = (e) => { e.preventDefault(); keys.right = false; };
+                btnRight.addEventListener('mousedown', startR);
+                btnRight.addEventListener('mouseup', endR);
+                btnRight.addEventListener('touchstart', startR);
+                btnRight.addEventListener('touchend', endR);
+            }
+
+            if (btnJump) {
+                const startJ = (e) => { 
+                    e.preventDefault(); 
+                    keys.jump = true; 
+                    triggerJump();
+                };
+                const endJ = (e) => { e.preventDefault(); keys.jump = false; };
+                btnJump.addEventListener('mousedown', startJ);
+                btnJump.addEventListener('mouseup', endJ);
+                btnJump.addEventListener('touchstart', startJ);
+                btnJump.addEventListener('touchend', endJ);
+            }
+
+            if (btnSlide) {
+                const startS = (e) => { e.preventDefault(); triggerSlide(true); };
+                const endS = (e) => { e.preventDefault(); triggerSlide(false); };
+                btnSlide.addEventListener('mousedown', startS);
+                btnSlide.addEventListener('mouseup', endS);
+                btnSlide.addEventListener('touchstart', startS);
+                btnSlide.addEventListener('touchend', endS);
+            }
+        }
+
+        function triggerShatterAndFall() {
+            const px = player.x + player.width / 2;
+            const py = player.y + player.height / 2;
+
+            for (let i = 0; i < 14; i++) {
+                fallenParts.push({
+                    x: px + (Math.random() * 20 - 10),
+                    y: py + (Math.random() * 20 - 10),
+                    vx: (Math.random() - 0.5) * 16,
+                    vy: -5 - Math.random() * 9,
+                    rot: Math.random() * Math.PI,
+                    vRot: (Math.random() - 0.5) * 0.6,
+                    type: 'rock_chunk',
+                    size: 6 + Math.random() * 8
+                });
+            }
+        }
+
+        /* ==================== GAME 1 LOGIC ==================== */
+        function buildInfiniteParkourWorld() {
+            platforms = [];
+            tangerines = [];
+            sceneryObjects = [];
+            fallenParts = [];
+
+            startGroundY = canvas.height - 120;
+            waterY = startGroundY + 360; 
+            
+            baseWaterSpeed = 2.45;
+            waterSpeed = baseWaterSpeed;
+
+            platforms.push({ x: -400, y: startGroundY, w: canvas.width + 800, h: 400, isGround: true });
+
+            player.x = 180;
+            player.y = startGroundY - player.height;
+            player.vx = 0;
+            player.vy = 0;
+            player.jumpCount = 0;
+            player.rotation = 0;
+            player.isDoubleJumping = false;
+            player.crouched = false;
+            maxClimbedY = player.y;
+
+            cameraX = player.x - canvas.width * 0.5 + player.width / 2;
+            cameraY = player.y - canvas.height * 0.55;
+
+            highestPlatformY = startGroundY;
+            lastStairX = 220;
+            stairDirection = 1;
+
+            stepsSinceLastTangerine = 0;
+            targetTangerineGap = Math.floor(Math.random() * 2) + 3;
+
+            sceneryObjects.push(
+                { x: 40, y: startGroundY, type: 'palm_tree' },
+                { x: 120, y: startGroundY, type: 'jeju_stonewall' },
+                { x: 220, y: startGroundY, type: 'canola_flower' },
+                { x: 340, y: startGroundY, type: 'hydrangea' },
+                { x: 480, y: startGroundY, type: 'wind_turbine' },
+                { x: 620, y: startGroundY, type: 'palm_tree' },
+                { x: 740, y: startGroundY, type: 'jeju_stonewall' }
+            );
+
+            generateParkourStairsUpTo(player.y - 1400);
+        }
+
+        function generateParkourStairsUpTo(targetY) {
+            while (highestPlatformY > targetY) {
+                const stepYGap = 85 + Math.random() * 30;
+                const stepXGap = (120 + Math.random() * 85) * stairDirection;
+                const platformWidth = 95 + Math.random() * 50;
+
+                let nextX = lastStairX + stepXGap;
+
+                if (nextX < 80) {
+                    nextX = 80 + Math.random() * 40;
+                    stairDirection = 1;
+                } else if (nextX > canvas.width - 180) {
+                    nextX = canvas.width - 200 - Math.random() * 40;
+                    stairDirection = -1;
+                } else if (Math.random() < 0.25) {
+                    stairDirection *= -1;
+                }
+
+                highestPlatformY -= stepYGap;
+                lastStairX = nextX;
+
+                const distFromGround = startGroundY - highestPlatformY;
+
+                platforms.push({
+                    x: nextX,
+                    y: highestPlatformY,
+                    w: platformWidth,
+                    h: 22,
+                    distFromGround: distFromGround
+                });
+
+                stepsSinceLastTangerine++;
+                if (stepsSinceLastTangerine >= targetTangerineGap) {
+                    tangerines.push({
+                        x: nextX + platformWidth / 2,
+                        y: highestPlatformY - 28,
+                        collected: false
+                    });
+                    stepsSinceLastTangerine = 0;
+                    targetTangerineGap = Math.floor(Math.random() * 2) + 3;
+                }
+
+                if (Math.random() < 0.55) {
+                    let sType = 'jeju_stonewall';
+                    if (distFromGround < 600) {
+                        const rand = Math.random();
+                        if (rand < 0.25) sType = 'canola_flower';
+                        else if (rand < 0.5) sType = 'hydrangea';
+                        else if (rand < 0.75) sType = 'wind_turbine';
+                        else sType = 'jeju_stonewall';
+                    } else if (distFromGround < 1600) {
+                        const rand = Math.random();
+                        if (rand < 0.3) sType = 'tangerine_tree';
+                        else if (rand < 0.6) sType = 'camellia';
+                        else sType = 'pampas_grass';
+                    } else {
+                        sType = Math.random() < 0.5 ? 'mountain_pine' : 'pampas_grass';
+                    }
+
+                    sceneryObjects.push({
+                        x: nextX + (Math.random() * (platformWidth - 20)),
+                        y: highestPlatformY,
+                        type: sType
+                    });
+                }
+            }
+        }
+
+        function updateStairsGame() {
+            if (keys.left) {
+                player.vx = -player.speed;
+                player.facing = -1;
+                player.walkFrame++;
+            } else if (keys.right) {
+                player.vx = player.speed;
+                player.facing = 1;
+                player.walkFrame++;
+            } else {
+                player.vx *= 0.7;
+            }
+
+            player.vy += gravity;
+            player.x += player.vx;
+            player.y += player.vy;
+
+            if (player.isDoubleJumping) {
+                player.rotation += player.facing * 0.25;
+            }
+
+            if (player.x < 10) { player.x = 10; player.vx = 0; }
+            if (player.x + player.width > canvas.width - 10) { player.x = canvas.width - 10 - player.width; player.vx = 0; }
+
+            player.grounded = false;
+            platforms.forEach(plat => {
+                if (
+                    player.x + player.width * 0.8 > plat.x &&
+                    player.x + player.width * 0.2 < plat.x + plat.w &&
+                    player.y + player.height >= plat.y &&
+                    player.y + player.height - player.vy <= plat.y + 14 &&
+                    player.vy >= 0
+                ) {
+                    player.y = plat.y - player.height;
+                    player.vy = 0;
+                    player.grounded = true;
+                    player.jumpCount = 0;
+                    player.rotation = 0;
+                    player.isDoubleJumping = false;
+                }
+            });
+
+            if (player.y < maxClimbedY) {
+                maxClimbedY = player.y;
+            }
+
+            const targetCamX = player.x - canvas.width * 0.5 + player.width / 2;
+            const targetCamY = player.y - canvas.height * 0.55;
+            cameraX += (targetCamX - cameraX) * 0.1;
+            cameraY += (targetCamY - cameraY) * 0.1;
+
+            tangerines.forEach(t => {
+                if (!t.collected) {
+                    const dx = (player.x + player.width / 2) - t.x;
+                    const dy = (player.y + player.height / 2) - t.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 28) {
+                        t.collected = true;
+                        playSound('coin');
+                        pauseAndTriggerQuiz();
+                    }
+                }
+            });
+
+            // 시간이 지날수록(elapsedSeconds) 바당 파도가 차오르는 속도 조정 (전 버전 0.035에서 0.018로 완화하여 적절한 긴장감 유지)
+            waterSpeed = baseWaterSpeed + (currentScore * 0.08) + (elapsedSeconds * 0.018);
+            waterY -= waterSpeed;
+
+            const dangerDist = Math.max(0, Math.floor((waterY - (player.y + player.height)) / 12));
+            const dangerText = document.getElementById('water-danger-text');
+            if (dangerText) {
+                dangerText.innerText = `위험거리: ${dangerDist}m`;
+                dangerText.className = dangerDist < 10 ? 'text-[10px] text-rose-400 font-bold animate-pulse mt-0.5' : 'text-[10px] text-amber-300 font-bold mt-0.5';
+            }
+
+            if (player.y + player.height >= waterY) {
+                playSound('water');
+                finishGameAndShowSurvey(false, 'water');
+                return;
+            }
+
+            if (player.y - 800 < highestPlatformY) {
+                generateParkourStairsUpTo(player.y - 1200);
+            }
+
+            fallenParts.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += gravity * 0.5;
+                p.rot += p.vRot;
+            });
+        }
+
+        function renderStairsGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            drawDynamicInfiniteBackground();
+
+            ctx.save();
+            ctx.translate(-cameraX, -cameraY);
+
+            sceneryObjects.forEach(obj => {
+                drawSceneryElement(obj.x, obj.y, obj.type);
+            });
+
+            platforms.forEach(plat => {
+                drawPlatform(plat);
+            });
+
+            tangerines.forEach(t => {
+                if (!t.collected) {
+                    drawTangerineItem(t.x, t.y);
+                }
+            });
+
+            if (!isGameOver || fallenParts.length === 0) {
+                drawCuteDolHareubang(
+                    player.x, 
+                    player.y, 
+                    player.facing, 
+                    Math.abs(player.vx) > 0.5, 
+                    !player.grounded,
+                    false
+                );
+            }
+
+            fallenParts.forEach(p => {
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rot);
+                ctx.fillStyle = '#64748b';
+                ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                ctx.restore();
+            });
+
+            drawRisingSeaWater();
+
+            ctx.restore();
+        }
+
+        /* ==================== GAME 2 LOGIC: 제주도 한바퀴 X런 ==================== */
+        function buildXRunWorld() {
+            xrunGroundY = canvas.height - 110;
+            xrunDistance = 0;
+            xrunSpeed = 6.0;
+            xrunObstacles = [];
+            xrunTangerines = [];
+            xrunScenery = [];
+            xrunSpawnTimer = 0;
+            fallenParts = [];
+
+            player.x = 120;
+            player.y = xrunGroundY - player.height;
+            player.vx = 0;
+            player.vy = 0;
+            player.jumpCount = 0;
+            player.rotation = 0;
+            player.isDoubleJumping = false;
+            player.facing = 1;
+            player.crouched = false;
+
+            cameraX = 0;
+            cameraY = 0;
+
+            for (let i = 0; i < 6; i++) {
+                xrunScenery.push({
+                    x: i * 200 + Math.random() * 50,
+                    type: ['palm_tree', 'wind_turbine', 'jeju_stonewall', 'canola_flower'][Math.floor(Math.random() * 4)]
+                });
+            }
+        }
+
+        function updateXRunGame() {
+            xrunDistance += xrunSpeed;
+            xrunSpeed = 6.0 + (currentScore * 0.15) + Math.min(3.0, xrunDistance * 0.0002);
+
+            const meters = Math.floor(xrunDistance / 10);
+            const altBadge = document.getElementById('altitude-badge');
+            if (altBadge) {
+                let landmarkText = "협재 해변";
+                if (meters > 2500) landmarkText = "백록담 정상 부근";
+                else if (meters > 1800) landmarkText = "성산일출봉 해안";
+                else if (meters > 1200) landmarkText = "서귀포 중문 해변";
+                else if (meters > 600) landmarkText = "애월 해안도로";
+                altBadge.innerText = `🏃‍♂️ 제주일주 (${meters}m - ${landmarkText})`;
+            }
+
+            const dangerText = document.getElementById('water-danger-text');
+            if (dangerText) {
+                dangerText.innerText = `속도: ${(xrunSpeed * 3.6).toFixed(1)}km/h`;
+                dangerText.className = 'text-[10px] text-teal-300 font-bold mt-0.5';
+            }
+
+            // Player physics
+            player.vy += gravity;
+            player.y += player.vy;
+
+            const currentHeight = player.crouched ? 32 : 56;
+
+            if (player.y + currentHeight >= xrunGroundY) {
+                player.y = xrunGroundY - currentHeight;
+                player.vy = 0;
+                player.grounded = true;
+                player.jumpCount = 0;
+                player.rotation = 0;
+                player.isDoubleJumping = false;
+            } else {
+                player.grounded = false;
+            }
+
+            if (player.isDoubleJumping) {
+                player.rotation += 0.25;
+            }
+
+            player.walkFrame++;
+
+            // Spawn Scenery
+            xrunScenery.forEach(s => {
+                s.x -= xrunSpeed * 0.7;
+            });
+            xrunScenery = xrunScenery.filter(s => s.x > -100);
+            if (xrunScenery.length < 6 && Math.random() < 0.05) {
+                xrunScenery.push({
+                    x: canvas.width + 100,
+                    type: ['palm_tree', 'wind_turbine', 'jeju_stonewall', 'canola_flower', 'camellia', 'tangerine_tree'][Math.floor(Math.random() * 6)]
+                });
+            }
+
+            // Spawn Obstacles & Tangerines (장애물 3~4개당 귤 1~2개 밸런스 조정)
+            xrunSpawnTimer++;
+            if (xrunSpawnTimer > 52 + Math.random() * 24) {
+                xrunSpawnTimer = 0;
+                const randType = Math.random();
+
+                if (randType < 0.36) {
+                    // 바닥 장애물: 현무암 / 돌담 (점프로 회피)
+                    xrunObstacles.push({
+                        x: canvas.width + 50,
+                        y: xrunGroundY - 32,
+                        w: 36,
+                        h: 32,
+                        type: Math.random() < 0.5 ? 'basalt_rock' : 'stonewall'
+                    });
+                } else if (randType < 0.72) {
+                    // 공중 장애물: 새(갈매기) -> 오직 숙이기로만 회피 가능
+                    xrunObstacles.push({
+                        x: canvas.width + 50,
+                        y: xrunGroundY - 62,
+                        w: 42,
+                        h: 24,
+                        type: 'seagull'
+                    });
+                } else {
+                    // 감귤 1개 단독 생성 (약 28% 비율: 장애물 3~4개당 귤 1~2개 출현)
+                    const tY = xrunGroundY - (Math.random() < 0.5 ? 45 : 85);
+                    xrunTangerines.push({
+                        x: canvas.width + 50,
+                        y: tY,
+                        collected: false
+                    });
+                }
+            }
+
+            // Update Obstacles position
+            xrunObstacles.forEach(obs => {
+                obs.x -= xrunSpeed;
+            });
+
+            // Update Tangerines position
+            xrunTangerines.forEach(t => {
+                t.x -= xrunSpeed;
+            });
+
+            // Player Bounding Box
+            const pBox = {
+                x: player.x + 6,
+                y: player.y + 4,
+                w: player.width - 12,
+                h: currentHeight - 8
+            };
+
+            // Collision check - Obstacles
+            xrunObstacles.forEach(obs => {
+                if (obs.type === 'seagull') {
+                    // 새(갈매기): X축 충돌 범위 체크
+                    const xOverlap = (pBox.x < obs.x + obs.w && pBox.x + pBox.w > obs.x);
+                    if (xOverlap) {
+                        // 숙이지 않고 서있거나 점프/2단점프 중이면 무조건 부딪힘!
+                        if (!player.crouched) {
+                            playSound('wrong');
+                            triggerShatterAndFall();
+                            finishGameAndShowSurvey(false, 'obstacle');
+                        }
+                    }
+                } else {
+                    // 일반 바닥 장애물 (현무암 돌, 돌담)
+                    if (
+                        pBox.x < obs.x + obs.w &&
+                        pBox.x + pBox.w > obs.x &&
+                        pBox.y < obs.y + obs.h &&
+                        pBox.y + pBox.h > obs.y
+                    ) {
+                        playSound('wrong');
+                        triggerShatterAndFall();
+                        finishGameAndShowSurvey(false, 'obstacle');
+                    }
+                }
+            });
+
+            // Collision check - Tangerines (1개씩 수집)
+            xrunTangerines.forEach(t => {
+                if (!t.collected) {
+                    const dx = (player.x + player.width / 2) - t.x;
+                    const dy = (player.y + currentHeight / 2) - t.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 28) {
+                        t.collected = true;
+                        playSound('coin');
+                        pauseAndTriggerQuiz();
+                    }
+                }
+            });
+
+            xrunObstacles = xrunObstacles.filter(obs => obs.x > -100);
+            xrunTangerines = xrunTangerines.filter(t => t.x > -100);
+
+            fallenParts.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += gravity * 0.5;
+                p.rot += p.vRot;
+            });
+        }
+
+        function renderXRunGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            drawXRunBackground();
+
+            xrunScenery.forEach(s => {
+                drawSceneryElement(s.x, xrunGroundY, s.type);
+            });
+
+            // Road
+            ctx.fillStyle = '#334155';
+            ctx.fillRect(0, xrunGroundY, canvas.width, canvas.height - xrunGroundY);
+
+            ctx.fillStyle = '#e2e8f0';
+            const dashOffset = (xrunDistance * 1.5) % 40;
+            for (let x = -dashOffset; x < canvas.width + 40; x += 40) {
+                ctx.fillRect(x, xrunGroundY + 12, 22, 5);
+            }
+
+            ctx.fillStyle = '#10b981';
+            ctx.fillRect(0, xrunGroundY, canvas.width, 4);
+
+            // Render Obstacles
+            xrunObstacles.forEach(obs => {
+                if (obs.type === 'basalt_rock') {
+                    ctx.fillStyle = '#1e293b';
+                    ctx.beginPath();
+                    ctx.roundRect(obs.x, obs.y, obs.w, obs.h, 8);
+                    ctx.fill();
+                    ctx.fillStyle = '#475569';
+                    ctx.beginPath();
+                    ctx.arc(obs.x + 10, obs.y + 10, 4, 0, Math.PI * 2);
+                    ctx.arc(obs.x + 22, obs.y + 18, 5, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (obs.type === 'stonewall') {
+                    ctx.fillStyle = '#475569';
+                    ctx.beginPath();
+                    ctx.roundRect(obs.x, obs.y, obs.w, obs.h, 4);
+                    ctx.fill();
+                    ctx.strokeStyle = '#0f172a';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                } else if (obs.type === 'seagull') {
+                    // 새(갈매기): 점프로 넘어갈 수 없음을 암시하는 하늘 바람 시각선
+                    ctx.fillStyle = 'rgba(56, 189, 248, 0.25)';
+                    ctx.fillRect(obs.x + 4, 0, obs.w - 8, obs.y - 5);
+
+                    const wing = Math.sin(Date.now() * 0.018) * 9;
+                    ctx.fillStyle = '#f8fafc';
+                    ctx.beginPath();
+                    ctx.arc(obs.x + 18, obs.y + 10, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Wings
+                    ctx.beginPath();
+                    ctx.moveTo(obs.x + 18, obs.y + 10);
+                    ctx.lineTo(obs.x - 6, obs.y + 10 - wing);
+                    ctx.lineTo(obs.x + 6, obs.y + 10);
+                    ctx.fill();
+                    
+                    // Beak
+                    ctx.fillStyle = '#f59e0b';
+                    ctx.beginPath();
+                    ctx.moveTo(obs.x + 26, obs.y + 8);
+                    ctx.lineTo(obs.x + 34, obs.y + 12);
+                    ctx.lineTo(obs.x + 26, obs.y + 14);
+                    ctx.fill();
+
+                    // '숙이기!' 안내 배지 시각 표시
+                    ctx.fillStyle = '#ec4899';
+                    ctx.font = 'bold 11px "Jua", sans-serif';
+                    ctx.fillText('⬇️ 숙이기!', obs.x - 2, obs.y - 12);
+                }
+            });
+
+            // Render Tangerines
+            xrunTangerines.forEach(t => {
+                if (!t.collected) {
+                    drawTangerineItem(t.x, t.y);
+                }
+            });
+
+            // Player Dolhareubang
+            if (!isGameOver || fallenParts.length === 0) {
+                drawCuteDolHareubang(
+                    player.x, 
+                    player.y, 
+                    player.facing, 
+                    true, 
+                    !player.grounded,
+                    player.crouched
+                );
+            }
+
+            fallenParts.forEach(p => {
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rot);
+                ctx.fillStyle = '#64748b';
+                ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                ctx.restore();
+            });
+        }
+
+        function drawXRunBackground() {
+            const w = canvas.width;
+            const h = canvas.height;
+            const bgOffset = xrunDistance * 0.2;
+
+            const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
+            skyGrad.addColorStop(0, '#0284c7');    
+            skyGrad.addColorStop(0.5, '#38bdf8');  
+            skyGrad.addColorStop(1, '#7dd3fc');    
+            ctx.fillStyle = skyGrad;
+            ctx.fillRect(0, 0, w, h);
+
+            ctx.fillStyle = 'rgba(253, 224, 71, 0.4)';
+            ctx.beginPath();
+            ctx.arc(w * 0.75, h * 0.25, 45, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = 'rgba(15, 118, 110, 0.45)';
+            ctx.beginPath();
+            ctx.moveTo(0, xrunGroundY);
+            for (let x = 0; x <= w + 100; x += 50) {
+                const mountainY = xrunGroundY - 140 - Math.sin((x + bgOffset) * 0.005) * 60;
+                ctx.lineTo(x, mountainY);
+            }
+            ctx.lineTo(w, xrunGroundY);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.fillStyle = '#0284c7';
+            ctx.fillRect(0, xrunGroundY - 20, w, 20);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, xrunGroundY - 20, w, 3);
+        }
+
+        function drawDynamicInfiniteBackground() {
+            const w = canvas.width;
+            const h = canvas.height;
+            const time = Date.now() * 0.0015;
+
+            const climbDist = Math.max(0, startGroundY - player.y);
+            const meters = Math.floor(climbDist / 12);
+
+            const altBadge = document.getElementById('altitude-badge');
+            if (altBadge) {
+                altBadge.innerText = `⛰️ 제주 한라산 등반 중 (${meters}m)`;
+            }
+
+            const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
+            skyGrad.addColorStop(0, '#0284c7');    
+            skyGrad.addColorStop(0.55, '#38bdf8');  
+            skyGrad.addColorStop(1, '#bae6fd');    
+            ctx.fillStyle = skyGrad;
+            ctx.fillRect(0, 0, w, h);
+
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.78)';
+            for (let i = 0; i < 5; i++) {
+                const cloudX = ((time * 22 + i * 190) % (w + 220)) - 110;
+                const cloudY = (h * 0.12) + (i * 45);
+                const cloudScale = 0.8 + (i % 3) * 0.25;
+                ctx.save();
+                ctx.translate(cloudX, cloudY);
+                ctx.scale(cloudScale, cloudScale);
+                ctx.beginPath();
+                ctx.arc(0, 0, 22, 0, Math.PI * 2);
+                ctx.arc(22, -10, 30, 0, Math.PI * 2);
+                ctx.arc(50, 0, 22, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            ctx.save();
+            const baseY = h;
+
+            ctx.fillStyle = 'rgba(13, 148, 136, 0.38)';
+            ctx.beginPath();
+            ctx.moveTo(-50, baseY);
+            ctx.lineTo(w * 0.2, baseY - 180);
+            ctx.lineTo(w * 0.5, baseY - 260);
+            ctx.lineTo(w * 0.8, baseY - 160);
+            ctx.lineTo(w + 50, baseY);
+            ctx.fill();
+
+            const mtnGrad = ctx.createLinearGradient(0, baseY - 350, 0, baseY);
+            mtnGrad.addColorStop(0, '#0f766e');
+            mtnGrad.addColorStop(0.5, '#115e59');
+            mtnGrad.addColorStop(1, '#134e4a');
+            ctx.fillStyle = mtnGrad;
+
+            ctx.beginPath();
+            ctx.moveTo(-60, baseY);
+            ctx.lineTo(w * 0.1, baseY - 160);
+            ctx.lineTo(w * 0.32, baseY - 310);
+            ctx.lineTo(w * 0.42, baseY - 290);
+            ctx.lineTo(w * 0.50, baseY - 290);
+            ctx.lineTo(w * 0.58, baseY - 325);
+            ctx.lineTo(w * 0.85, baseY - 170);
+            ctx.lineTo(w + 60, baseY);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.82)';
+            ctx.beginPath();
+            ctx.moveTo(w * 0.30, baseY - 290);
+            ctx.lineTo(w * 0.32, baseY - 310);
+            ctx.lineTo(w * 0.42, baseY - 290);
+            ctx.lineTo(w * 0.50, baseY - 290);
+            ctx.lineTo(w * 0.58, baseY - 325);
+            ctx.lineTo(w * 0.61, baseY - 295);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        function drawRisingSeaWater() {
+            const time = Date.now() * 0.005;
+
+            ctx.save();
+
+            const seaGrad = ctx.createLinearGradient(0, waterY, 0, waterY + 700);
+            seaGrad.addColorStop(0, 'rgba(14, 165, 233, 0.90)');
+            seaGrad.addColorStop(0.3, 'rgba(2, 132, 199, 0.95)');
+            seaGrad.addColorStop(1, 'rgba(15, 23, 42, 0.98)');
+            ctx.fillStyle = seaGrad;
+
+            ctx.beginPath();
+            ctx.moveTo(-100, waterY + 1400);
+            ctx.lineTo(-100, waterY);
+
+            for (let x = -100; x <= canvas.width + 100; x += 8) {
+                const wave1 = Math.sin(x * 0.018 + time * 2.2) * 14;
+                const wave2 = Math.cos(x * 0.035 - time * 1.5) * 8;
+                const wy = waterY + wave1 + wave2;
+                ctx.lineTo(x, wy);
+            }
+
+            ctx.lineTo(canvas.width + 100, waterY + 1400);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            for (let x = -100; x <= canvas.width + 100; x += 8) {
+                const wave1 = Math.sin(x * 0.018 + time * 2.2) * 14;
+                const wave2 = Math.cos(x * 0.035 - time * 1.5) * 8;
+                const wy = waterY + wave1 + wave2;
+                if (x === -100) ctx.moveTo(x, wy);
+                else ctx.lineTo(x, wy);
+            }
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        function drawCuteDolHareubang(x, y, facing, isWalking, isJumping, isCrouched) {
+            ctx.save();
+
+            const renderH = isCrouched ? 36 : player.height;
+            const centerX = x + player.width / 2;
+            const centerY = y + renderH / 2;
+
+            ctx.translate(centerX, centerY);
+            if (player.rotation !== 0) {
+                ctx.rotate(player.rotation);
+            }
+            ctx.translate(0, renderH / 2);
+
+            if (facing === -1) {
+                ctx.scale(-1, 1);
+            }
+
+            const w = player.width;
+            const h = renderH;
+
+            const bounceY = isWalking && !isCrouched ? Math.sin(player.walkFrame * 0.3) * 3 : 0;
+            ctx.translate(0, bounceY);
+
+            // Shadow
+            ctx.fillStyle = 'rgba(0,0,0,0.22)';
+            ctx.beginPath();
+            ctx.ellipse(0, -2, w / 2, 6, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Body
+            ctx.fillStyle = '#475569';
+            ctx.beginPath();
+            ctx.roundRect(-w / 2 + 3, -h + 14, w - 6, h - 22, 12);
+            ctx.fill();
+
+            // Texture dots
+            ctx.fillStyle = '#334155';
+            ctx.beginPath();
+            ctx.arc(-8, -h + (isCrouched ? 20 : 38), 2, 0, Math.PI * 2);
+            ctx.arc(9, -h + (isCrouched ? 24 : 44), 2.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Feet
+            ctx.fillStyle = '#334155';
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+            ctx.roundRect(3, -14, 15, 14, 4);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.roundRect(-18, -14, 15, 14, 4);
+            ctx.fill();
+            ctx.stroke();
+
+            // Hands
+            ctx.fillStyle = '#334155';
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+            ctx.roundRect(w / 2 - 4, -h + (isCrouched ? 18 : 32), 16, 12, 5);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = '#475569';
+            ctx.beginPath();
+            ctx.arc(w / 2 + 10, -h + (isCrouched ? 24 : 38), 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#334155';
+            ctx.beginPath();
+            ctx.roundRect(-w / 2 - 12, -h + (isCrouched ? 18 : 32), 16, 12, 5);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = '#475569';
+            ctx.beginPath();
+            ctx.arc(-w / 2 - 8, -h + (isCrouched ? 24 : 38), 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Hat
+            ctx.fillStyle = '#1e293b';
+            ctx.beginPath();
+            ctx.ellipse(0, -h + 14, w / 2 + 4, 7, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.roundRect(-12, -h + 4, 24, 11, 4);
+            ctx.fill();
+
+            // Tangerine Hat Deco
+            ctx.fillStyle = '#f97316';
+            ctx.beginPath();
+            ctx.arc(0, -h + 2, 5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#22c55e';
+            ctx.beginPath();
+            ctx.ellipse(3, -h - 1, 4, 2, Math.PI / 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Eyes
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(-8, -h + 26, 7.5, 0, Math.PI * 2);
+            ctx.arc(8, -h + 26, 7.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath();
+            ctx.arc(-7, -h + 26, 3.5, 0, Math.PI * 2);
+            ctx.arc(9, -h + 26, 3.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(-8, -h + 24, 1.5, 0, Math.PI * 2);
+            ctx.arc(8, -h + 24, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Cheeks
+            ctx.fillStyle = 'rgba(251, 113, 133, 0.65)';
+            ctx.beginPath();
+            ctx.ellipse(-12, -h + 31, 4, 2.5, 0, 0, Math.PI * 2);
+            ctx.ellipse(12, -h + 31, 4, 2.5, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Nose
+            ctx.fillStyle = '#334155';
+            ctx.beginPath();
+            ctx.roundRect(-4.5, -h + 28, 9, 10, 4);
+            ctx.fill();
+
+            ctx.restore();
+
+            // Name Tag Badge
+            if (currentUser && currentUser.name) {
+                const nameText = currentUser.name;
+                ctx.font = 'bold 12px "Jua", sans-serif';
+                const textWidth = ctx.measureText(nameText).width;
+                const badgeW = textWidth + 18;
+                const badgeH = 22;
+                const badgeX = x + player.width / 2 - badgeW / 2;
+                const badgeY = y - (isCrouched ? 18 : 28);
+
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+                ctx.beginPath();
+                ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 10);
+                ctx.fill();
+
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                ctx.fillStyle = '#fef08a';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(nameText, x + player.width / 2, badgeY + badgeH / 2);
+            }
+        }
+
+        function drawTangerineItem(x, y) {
+            const floatY = Math.sin(Date.now() * 0.005) * 4;
+            ctx.save();
+            ctx.translate(x, y + floatY);
+
+            ctx.fillStyle = 'rgba(251, 191, 36, 0.35)';
+            ctx.beginPath();
+            ctx.arc(0, 0, 16, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#f97316';
+            ctx.beginPath();
+            ctx.arc(0, 0, 11, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#22c55e';
+            ctx.beginPath();
+            ctx.ellipse(3, -11, 5, 2.5, Math.PI / 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(-3, -4, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        function drawPlatform(plat) {
+            ctx.save();
+            if (plat.isGround) {
+                ctx.fillStyle = '#fde047';
+                ctx.fillRect(plat.x, plat.y, plat.w, plat.h);
+                ctx.fillStyle = '#eab308';
+                ctx.fillRect(plat.x, plat.y, plat.w, 8);
+            } else {
+                ctx.fillStyle = '#334155';
+                ctx.beginPath();
+                ctx.roundRect(plat.x, plat.y, plat.w, plat.h, 6);
+                ctx.fill();
+
+                ctx.strokeStyle = '#1e293b';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.fillStyle = '#10b981';
+                ctx.beginPath();
+                ctx.roundRect(plat.x + 2, plat.y, plat.w - 4, 5, [3, 3, 0, 0]);
+                ctx.fill();
+
+                ctx.fillStyle = '#1e293b';
+                for (let i = 12; i < plat.w - 10; i += 18) {
+                    ctx.beginPath();
+                    ctx.arc(plat.x + i, plat.y + 11, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            ctx.restore();
+        }
+
+        function drawSceneryElement(x, y, type) {
+            ctx.save();
+            if (type === 'palm_tree') {
+                ctx.fillStyle = '#854d0e';
+                ctx.fillRect(x + 8, y - 50, 8, 50);
+                ctx.fillStyle = '#15803d';
+                ctx.beginPath();
+                ctx.arc(x + 12, y - 55, 22, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (type === 'canola_flower') {
+                ctx.fillStyle = '#15803d';
+                ctx.fillRect(x + 6, y - 16, 3, 16);
+                ctx.fillStyle = '#eab308';
+                ctx.beginPath();
+                ctx.arc(x + 7.5, y - 20, 7, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (type === 'hydrangea') {
+                ctx.fillStyle = '#3b82f6';
+                ctx.beginPath();
+                ctx.arc(x + 10, y - 14, 11, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (type === 'wind_turbine') {
+                ctx.fillStyle = '#e2e8f0';
+                ctx.fillRect(x + 8, y - 70, 4, 70);
+                const rot = Date.now() * 0.002;
+                ctx.translate(x + 10, y - 70);
+                ctx.rotate(rot);
+                ctx.fillStyle = '#f8fafc';
+                for (let i = 0; i < 3; i++) {
+                    ctx.rotate((Math.PI * 2) / 3);
+                    ctx.fillRect(-2, -25, 4, 25);
+                }
+            } else if (type === 'tangerine_tree') {
+                ctx.fillStyle = '#78350f';
+                ctx.fillRect(x + 8, y - 30, 6, 30);
+                ctx.fillStyle = '#166534';
+                ctx.beginPath();
+                ctx.arc(x + 11, y - 38, 18, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#f97316';
+                ctx.beginPath();
+                ctx.arc(x + 5, y - 40, 3.5, 0, Math.PI * 2);
+                ctx.arc(x + 16, y - 34, 3.5, 0, Math.PI * 2);
+                ctx.arc(x + 11, y - 46, 3.5, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (type === 'camellia') {
+                ctx.fillStyle = '#15803d';
+                ctx.beginPath();
+                ctx.arc(x + 10, y - 16, 12, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#e11d48';
+                ctx.beginPath();
+                ctx.arc(x + 6, y - 18, 4, 0, Math.PI * 2);
+                ctx.arc(x + 14, y - 14, 4, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (type === 'jeju_stonewall') {
+                ctx.fillStyle = '#334155';
+                ctx.beginPath();
+                ctx.roundRect(x, y - 16, 28, 16, 3);
+                ctx.fill();
+            }
+            ctx.restore();
+        }
+    </script>
+</body>
+</html>
